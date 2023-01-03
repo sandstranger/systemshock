@@ -9,6 +9,12 @@ GENERAL NOTES
 
 This version of Shockolate is going to have some extra stuff. It is described below.
 
+Changes:
+========
+
+- Preferences and Keybinds are now stored in `Meeper/SystemShock` instead of `Interrupt/SystemShock` for organization purposes.
+- Field of View is 110 degrees until FOV Slider is implemented.
+
 Added Features so far:
 ======================
 
