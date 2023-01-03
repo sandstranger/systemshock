@@ -1911,7 +1911,7 @@ void use_object_in_3d(ObjID obj, bool shifted) {
         if (shifted) {
             absorb_object_on_cursor(0, 0, 0); //parameters unused
         }
-        else
+		else if (!gShockPrefs.goPersistMLook)
             mouse_look_off();
 
         success = TRUE;

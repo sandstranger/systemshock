@@ -127,8 +127,8 @@ int main(int argc, char **argv) {
 
     // Draw the splash screen
 
-    INFO("Showing splash screen");
-    splash_draw(show_splash);
+    //INFO("Showing splash screen");
+    //splash_draw(show_splash);
 
     // Start in the Main Menu loop
 
@@ -192,7 +192,8 @@ void InitSDL() {
 
     // Open our window!
     char window_title[128];
-    sprintf(window_title, "System Shock - %s", SHOCKOLATE_VERSION);
+    //sprintf(window_title, "System Shock - %s", SHOCKOLATE_VERSION);
+	sprintf(window_title, "System Shock - Meeper");
 
     window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, grd_cap->w, grd_cap->h,
                               SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL);

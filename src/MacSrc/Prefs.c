@@ -85,6 +85,7 @@ static const char *PREF_MSG_LENGTH = "message-length";
 static const char *PREF_ALOG_SETTING = "alog-setting";
 static const char *PREF_MIDI_BACKEND = "midi-backend";
 static const char *PREF_MIDI_OUTPUT = "midi-output";
+static const char *PREF_PERSIST_MLOOK = "persist-mouselook";
 
 static void SetShockGlobals(void);
 
@@ -124,6 +125,8 @@ void SetDefaultPrefs(void) {
     gShockPrefs.goMsgLength = 0; // Normal
     audiolog_setting = 1;
 
+	gShockPrefs.goPersistMLook = false;
+
     SetShockGlobals();
 }
 
@@ -135,7 +138,7 @@ static char *GetPrefsPathFilename(void) {
         fclose(f);
         strcpy(filename, PREFS_FILENAME);
     } else {
-        char *p = SDL_GetPrefPath("Interrupt", "SystemShock");
+        char *p = SDL_GetPrefPath("Meeper", "SystemShock");
         snprintf(filename, sizeof(filename), "%s%s", p, PREFS_FILENAME);
         SDL_free(p);
     }
@@ -241,7 +244,9 @@ int16_t LoadPrefs(void) {
             int mo = atoi(value);
             if (mo >= 0)
                 gShockPrefs.soMidiOutput = (short)mo;
-        }
+		} else if (strcasecmp(key, PREF_PERSIST_MLOOK) == 0) {
+			gShockPrefs.goPersistMLook = is_true(value);
+		}
     }
 
     fclose(f);
@@ -278,6 +283,7 @@ int16_t SavePrefs(void) {
     fprintf(f, "%s = %d\n", PREF_ALOG_SETTING, audiolog_setting);
     fprintf(f, "%s = %d\n", PREF_MIDI_BACKEND, gShockPrefs.soMidiBackend);
     fprintf(f, "%s = %d\n", PREF_MIDI_OUTPUT, gShockPrefs.soMidiOutput);
+	fprintf(f, "%s = %s\n", PREF_PERSIST_MLOOK, gShockPrefs.goPersistMLook ? "yes" : "no");
     fclose(f);
     return 0;
 }
@@ -538,6 +544,7 @@ HOTKEYLOOKUP HotKeyLookup[] = {
     {"\"pause\"", DEMO_CONTEXT, pause_game_func, TRUE, 0, DOWN('p'), 0},
     {"\"reload_weapon 1\"", DEMO_CONTEXT, reload_weapon_hotkey, 1, 0, CTRL(KEY_BS), 0},
     {"\"reload_weapon 0\"", DEMO_CONTEXT, reload_weapon_hotkey, 0, 0, ALT(KEY_BS), 0},
+	{ "\"reload_weapon 0\"", DEMO_CONTEXT, reload_weapon_hotkey, 0, 0, DOWN('r'), 0 },
     {"\"select_grenade\"", DEMO_CONTEXT, select_grenade_hotkey, 0, 0, CTRL('\''), 0},
     {"\"toggle_olh\"", DEMO_CONTEXT, toggle_olh_func, 0, 0, CTRL('h'), 0},
     {"\"select_drug\"", DEMO_CONTEXT, select_drug_hotkey, 0, 0, CTRL(';'), 0},
@@ -571,16 +578,6 @@ HOTKEYLOOKUP HotKeyLookup[] = {
     {"\"mfd right 3\"", DEMO_CONTEXT, mfd_button_callback_kb, 0, 0, KEY_F8, 0},
     {"\"mfd right 4\"", DEMO_CONTEXT, mfd_button_callback_kb, 0, 0, KEY_F9, 0},
     {"\"mfd right 5\"", DEMO_CONTEXT, mfd_button_callback_kb, 0, 0, KEY_F10, 0},
-    {"\"keypad 0\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('0'), 0},
-    {"\"keypad 1\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('1'), 0},
-    {"\"keypad 2\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('2'), 0},
-    {"\"keypad 3\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('3'), 0},
-    {"\"keypad 4\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('4'), 0},
-    {"\"keypad 5\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('5'), 0},
-    {"\"keypad 6\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('6'), 0},
-    {"\"keypad 7\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('7'), 0},
-    {"\"keypad 8\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('8'), 0},
-    {"\"keypad 9\"", DEMO_CONTEXT, keypad_hotkey_func, 0, 0, DOWN('9'), 0},
     //  { "\"mac_help\"",         DEMO_CONTEXT, MacHelpFunc,            0                        , 0, CTRL('/'),     0
     //  },
     {"\"toggle_options\"", DEMO_CONTEXT, wrapper_options_func, TRUE, 0, DOWN(KEY_ESC), 0},
@@ -604,7 +601,7 @@ static char *GetKeybindsPathFilename(void) {
         fclose(f);
         strcpy(filename, KEYBINDS_FILENAME);
     } else {
-        char *p = SDL_GetPrefPath("Interrupt", "SystemShock");
+        char *p = SDL_GetPrefPath("Meeper", "SystemShock");
         snprintf(filename, sizeof(filename), "%s%s", p, KEYBINDS_FILENAME);
         SDL_free(p);
     }
@@ -755,41 +752,27 @@ static MOVE_KEYBIND MoveKeybindsDefault[] =
   { CODE_W        | KB_FLAG_SHIFT, M_RUNFORWARD    },
   { CODE_UP       | KB_FLAG_SHIFT, M_RUNFORWARD    },
   { CODE_UP       | KB_FLAG_ALT  , M_RUNFORWARD    },
-  { CODE_KP_UP    | KB_FLAG_SHIFT, M_RUNFORWARD    },
-  { CODE_KP_UP    | KB_FLAG_ALT  , M_RUNFORWARD    },
   { CODE_W                       , M_FORWARD       },
   { CODE_UP                      , M_FORWARD       },
-  { CODE_KP_UP                   , M_FORWARD       },
   { CODE_Z        | KB_FLAG_SHIFT, M_FASTTURNLEFT  },
   { CODE_LEFT     | KB_FLAG_SHIFT, M_FASTTURNLEFT  },
-  { CODE_KP_LEFT  | KB_FLAG_SHIFT, M_FASTTURNLEFT  },
   { CODE_Z                       , M_TURNLEFT      },
   { CODE_LEFT                    , M_TURNLEFT      },
-  { CODE_KP_LEFT                 , M_TURNLEFT      },
   { CODE_C        | KB_FLAG_SHIFT, M_FASTTURNRIGHT },
   { CODE_RIGHT    | KB_FLAG_SHIFT, M_FASTTURNRIGHT },
-  { CODE_KP_RIGHT | KB_FLAG_SHIFT, M_FASTTURNRIGHT },
   { CODE_C                       , M_TURNRIGHT     },
   { CODE_RIGHT                   , M_TURNRIGHT     },
-  { CODE_KP_RIGHT                , M_TURNRIGHT     },
   { CODE_S                       , M_BACK          },
   { CODE_S        | KB_FLAG_SHIFT, M_BACK          },
   { CODE_DOWN                    , M_BACK          },
   { CODE_DOWN     | KB_FLAG_SHIFT, M_BACK          },
   { CODE_DOWN     | KB_FLAG_ALT  , M_BACK          },
-  { CODE_KP_DOWN                 , M_BACK          },
-  { CODE_KP_DOWN  | KB_FLAG_SHIFT, M_BACK          },
-  { CODE_KP_DOWN  | KB_FLAG_ALT  , M_BACK          },
   { CODE_A                       , M_SLIDELEFT     },
   { CODE_A        | KB_FLAG_SHIFT, M_SLIDELEFT     },
   { CODE_LEFT     | KB_FLAG_ALT  , M_SLIDELEFT     },
-  { CODE_KP_LEFT  | KB_FLAG_ALT  , M_SLIDELEFT     },
-  { CODE_KP_END                  , M_SLIDELEFT     },
   { CODE_D                       , M_SLIDERIGHT    },
   { CODE_D        | KB_FLAG_SHIFT, M_SLIDERIGHT    },
   { CODE_RIGHT    | KB_FLAG_ALT  , M_SLIDERIGHT    },
-  { CODE_KP_RIGHT | KB_FLAG_ALT  , M_SLIDERIGHT    },
-  { CODE_KP_PGDN                 , M_SLIDERIGHT    },
   { CODE_J                       , M_JUMP          },
   { CODE_J        | KB_FLAG_SHIFT, M_JUMP          },
   { CODE_SPACE                   , M_JUMP          },
@@ -803,58 +786,29 @@ static MOVE_KEYBIND MoveKeybindsDefault[] =
   { CODE_Q                       , M_LEANLEFT      },
   { CODE_Q        | KB_FLAG_SHIFT, M_LEANLEFT      },
   { CODE_LEFT     | KB_FLAG_CTRL , M_LEANLEFT      },
-  { CODE_KP_LEFT  | KB_FLAG_CTRL , M_LEANLEFT      },
   { CODE_E                       , M_LEANRIGHT     },
   { CODE_E        | KB_FLAG_SHIFT, M_LEANRIGHT     },
   { CODE_RIGHT    | KB_FLAG_CTRL , M_LEANRIGHT     },
-  { CODE_KP_RIGHT | KB_FLAG_CTRL , M_LEANRIGHT     },
-  { CODE_R                       , M_LOOKUP        },
-  { CODE_R        | KB_FLAG_SHIFT, M_LOOKUP        },
-  { CODE_R        | KB_FLAG_CTRL , M_LOOKUP        },
   { CODE_UP       | KB_FLAG_CTRL , M_LOOKUP        },
-  { CODE_KP_UP    | KB_FLAG_CTRL , M_LOOKUP        },
-  { CODE_V                       , M_LOOKDOWN      },
-  { CODE_V        | KB_FLAG_SHIFT, M_LOOKDOWN      },
-  { CODE_V        | KB_FLAG_CTRL , M_LOOKDOWN      },
   { CODE_DOWN     | KB_FLAG_CTRL , M_LOOKDOWN      },
-  { CODE_KP_DOWN  | KB_FLAG_CTRL , M_LOOKDOWN      },
-  { CODE_KP_HOME                 , M_RUNLEFT       },
-  { CODE_KP_PGUP                 , M_RUNRIGHT      },
   { CODE_S                       , M_THRUST        }, //cyber start
   { CODE_S        | KB_FLAG_SHIFT, M_THRUST        },
-  { CODE_KP_5                    , M_THRUST        },
   { CODE_W                       , M_CLIMB         },
   { CODE_W        | KB_FLAG_SHIFT, M_CLIMB         },
   { CODE_UP                      , M_CLIMB         },
   { CODE_UP       | KB_FLAG_SHIFT, M_CLIMB         },
   { CODE_UP       | KB_FLAG_CTRL , M_CLIMB         },
   { CODE_UP       | KB_FLAG_ALT  , M_CLIMB         },
-  { CODE_KP_UP                   , M_CLIMB         },
-  { CODE_KP_UP    | KB_FLAG_SHIFT, M_CLIMB         },
-  { CODE_KP_UP    | KB_FLAG_CTRL , M_CLIMB         },
-  { CODE_KP_UP    | KB_FLAG_ALT  , M_CLIMB         },
   { CODE_A                       , M_BANKLEFT      },
   { CODE_A        | KB_FLAG_SHIFT, M_BANKLEFT      },
-  { CODE_KP_LEFT                 , M_BANKLEFT      },
-  { CODE_KP_LEFT  | KB_FLAG_SHIFT, M_BANKLEFT      },
-  { CODE_KP_LEFT  | KB_FLAG_CTRL , M_BANKLEFT      },
-  { CODE_KP_LEFT  | KB_FLAG_ALT  , M_BANKLEFT      },
   { CODE_D                       , M_BANKRIGHT     },
   { CODE_D        | KB_FLAG_SHIFT, M_BANKRIGHT     },
-  { CODE_KP_RIGHT                , M_BANKRIGHT     },
-  { CODE_KP_RIGHT | KB_FLAG_SHIFT, M_BANKRIGHT     },
-  { CODE_KP_RIGHT | KB_FLAG_CTRL , M_BANKRIGHT     },
-  { CODE_KP_RIGHT | KB_FLAG_ALT  , M_BANKRIGHT     },
   { CODE_X                       , M_DIVE          },
   { CODE_X        | KB_FLAG_SHIFT, M_DIVE          },
   { CODE_DOWN                    , M_DIVE          },
   { CODE_DOWN     | KB_FLAG_SHIFT, M_DIVE          },
   { CODE_DOWN     | KB_FLAG_CTRL , M_DIVE          },
   { CODE_DOWN     | KB_FLAG_ALT  , M_DIVE          },
-  { CODE_KP_DOWN                 , M_DIVE          },
-  { CODE_KP_DOWN  | KB_FLAG_SHIFT, M_DIVE          },
-  { CODE_KP_DOWN  | KB_FLAG_CTRL , M_DIVE          },
-  { CODE_KP_DOWN  | KB_FLAG_ALT  , M_DIVE          },
   { CODE_Q                       , M_ROLLRIGHT     },
   { CODE_Q        | KB_FLAG_SHIFT, M_ROLLRIGHT     },
   { CODE_Z                       , M_ROLLRIGHT     },
@@ -863,22 +817,6 @@ static MOVE_KEYBIND MoveKeybindsDefault[] =
   { CODE_E        | KB_FLAG_SHIFT, M_ROLLLEFT      },
   { CODE_C                       , M_ROLLLEFT      },
   { CODE_C        | KB_FLAG_SHIFT, M_ROLLLEFT      },
-  { CODE_KP_HOME                 , M_CLIMBLEFT     },
-  { CODE_KP_HOME  | KB_FLAG_SHIFT, M_CLIMBLEFT     },
-  { CODE_KP_HOME  | KB_FLAG_CTRL , M_CLIMBLEFT     },
-  { CODE_KP_HOME  | KB_FLAG_ALT  , M_CLIMBLEFT     },
-  { CODE_KP_PGUP                 , M_CLIMBRIGHT    },
-  { CODE_KP_PGUP  | KB_FLAG_SHIFT, M_CLIMBRIGHT    },
-  { CODE_KP_PGUP  | KB_FLAG_CTRL , M_CLIMBRIGHT    },
-  { CODE_KP_PGUP  | KB_FLAG_ALT  , M_CLIMBRIGHT    },
-  { CODE_KP_PGDN                 , M_DIVERIGHT     },
-  { CODE_KP_PGDN  | KB_FLAG_SHIFT, M_DIVERIGHT     },
-  { CODE_KP_PGDN  | KB_FLAG_CTRL , M_DIVERIGHT     },
-  { CODE_KP_PGDN  | KB_FLAG_ALT  , M_DIVERIGHT     },
-  { CODE_KP_END                  , M_DIVELEFT      },
-  { CODE_KP_END   | KB_FLAG_SHIFT, M_DIVELEFT      },
-  { CODE_KP_END   | KB_FLAG_CTRL , M_DIVELEFT      },
-  { CODE_KP_END   | KB_FLAG_ALT  , M_DIVELEFT      },
 
                                              {255, -1}};
 

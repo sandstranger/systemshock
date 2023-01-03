@@ -38,6 +38,7 @@ typedef struct {
     short goLanguage; // 0 - English, 1 - French, 2 - German
     bool goCaptureMouse;
     bool goInvertMouseY;
+	bool goPersistMLook;
 
     // Sound Options
     bool soBackMusic;

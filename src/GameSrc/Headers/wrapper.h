@@ -103,6 +103,7 @@ enum TEMP_STR_ {
     REF_STR_Renderer = 0x10000000,
     REF_STR_Software,
     REF_STR_OpenGL,
+	REF_STR_Rendering,
 
     REF_STR_TextFilt = 0x10000010,
     REF_STR_TFUnfil, // unfiltered
@@ -111,6 +112,9 @@ enum TEMP_STR_ {
     REF_STR_MousLook = 0x11000000,
     REF_STR_MousNorm,
     REF_STR_MousInv,
+	REF_STR_Persist_MLook,
+
+	REF_STR_Digichan,
 
     REF_STR_Seqer    = 0x20000000,
     REF_STR_ADLMIDI,

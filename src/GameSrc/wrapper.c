@@ -80,6 +80,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SCREENMODE_BUTTON    9
 #define HEAD_RECENTER_BUTTON 10
 #define HEADSET_BUTTON       11
+#define RENDERING_BUTTON     12
 
 #define MOUSE_DOWN (MOUSE_LDOWN | MOUSE_RDOWN | UI_MOUSE_LDOUBLE)
 #define MOUSE_UP   (MOUSE_LUP | MOUSE_RUP)
@@ -128,6 +129,7 @@ void joystick_screen_init(void);
 void sound_screen_init(void);
 void soundopt_screen_init(void);
 void video_screen_init(void);
+void video_screen_first_init(void);
 
 uint multi_get_curval(uchar type, void *p);
 void multi_set_curval(uchar type, void *p, uint val, void *deal);
@@ -345,6 +347,7 @@ static char *_get_temp_string(int num) {
         case REF_STR_Renderer: return "Renderer";
         case REF_STR_Software: return "Software";
         case REF_STR_OpenGL:   return "OpenGL";
+		case REF_STR_Rendering:   return "Rendering";
 
         case REF_STR_TextFilt: return "Tex Filter";
         case REF_STR_TFUnfil:  return "Unfiltered";
@@ -353,6 +356,13 @@ static char *_get_temp_string(int num) {
         case REF_STR_MousLook: return "Mouselook";
         case REF_STR_MousNorm: return "Normal";
         case REF_STR_MousInv:  return "Inverted";
+		case REF_STR_Persist_MLook:  return "Keep MLook";
+
+		case REF_STR_Digichan: return "2";
+		case REF_STR_Digichan + 1: return "4";
+		case REF_STR_Digichan + 2: return "8";
+		case REF_STR_Digichan + 3: return "16";
+		case REF_STR_Digichan + 4: return "32";
 
         case REF_STR_Seqer:    return "Midi Player";
         case REF_STR_ADLMIDI:  return "ADLMIDI";
@@ -1228,9 +1238,12 @@ void wrapper_pushbutton_func(uchar butid) {
     case INPUT_BUTTON: // Input
         input_screen_init();
         break;
-    case VIDEO_BUTTON: // Input
-        video_screen_init();
+    case VIDEO_BUTTON: // Video
+		video_screen_init();
         break;
+	case RENDERING_BUTTON:
+		video_screen_init();
+		break;
 #ifdef SVGA_SUPPORT
     case SCREENMODE_BUTTON: // Input
         screenmode_screen_init();
@@ -1386,7 +1399,7 @@ void audiolog_dealfunc(short val) {
 }
 #endif
 
-char hack_digi_channels = 1;
+char hack_digi_channels = 4;
 
 void digichan_dealfunc(short val) {
     hack_digi_channels = val;
@@ -1400,6 +1413,12 @@ void digichan_dealfunc(short val) {
     case 2:
         cur_digi_channels = 8;
         break;
+	case 3:
+		cur_digi_channels = 16;
+		break;
+	case 4:
+		cur_digi_channels = 32;
+		break;
     }
     QUESTVAR_SET(DIGI_CHANNELS_QVAR, hack_digi_channels);
     // snd_set_digital_channels(cur_digi_channels);
@@ -1432,8 +1451,8 @@ void soundopt_screen_init() {
 
     standard_button_rect(&r, i, 2, 2, 5);
     retkey = tolower(get_temp_string(REF_STR_AilThreeText)[0]);
-    multi_init(i, retkey, REF_STR_AilThreeText, REF_STR_DigiChannelState, ID_NULL, sizeof(hack_digi_channels),
-               &hack_digi_channels, 3, digichan_dealfunc, &r);
+	multi_init(i, retkey, REF_STR_AilThreeText, REF_STR_Digichan, ID_NULL, sizeof(hack_digi_channels),
+               &hack_digi_channels, 5, digichan_dealfunc, &r);
     i++;
 
     standard_button_rect(&r, i, 2, 2, 5);
@@ -1913,6 +1932,28 @@ void video_screen_init(void) {
     opanel_redraw(TRUE);
 }
 
+void video_screen_first_init(void) {
+	LGRect r;
+	int i;
+	char *keys;
+	uchar sliderbase;
+
+	keys = get_temp_string(REF_STR_KeyEquivs0);
+	clear_obuttons();
+	i = 0;
+
+	// video mode
+	standard_button_rect(&r, i, 2, 2, 2);
+	pushbutton_init(RENDERING_BUTTON, keys[1], REF_STR_Rendering, wrapper_pushbutton_func, &r);
+	i++;
+
+	// return (fixed at position 5)
+	standard_button_rect(&r, 5, 2, 2, 2);
+	pushbutton_init(RETURN_BUTTON, keys[3], REF_STR_OptionsText + 5, wrapper_pushbutton_func, &r);
+
+	opanel_redraw(TRUE);
+}
+
 #if defined(VFX1_SUPPORT) || defined(CTM_SUPPORT)
 void headset_screen_init(void) {
     LGRect r;
@@ -2031,6 +2072,10 @@ void options_screen_init(void) {
     multi_init(i, keys[i], REF_STR_OptionsText + 2, REF_STR_TerseText, REF_STR_TerseFeedback,
                sizeof(gShockPrefs.goMsgLength), &(gShockPrefs.goMsgLength), 2, NULL, &r);
     i++;
+
+	standard_button_rect(&r, 3, 2, 2, 2);
+	multi_init(i, keys[i], REF_STR_Persist_MLook, REF_STR_OffonText, ID_NULL,
+		sizeof(gShockPrefs.goPersistMLook), &(gShockPrefs.goPersistMLook), 2, NULL, &r);
 
     i++;
 

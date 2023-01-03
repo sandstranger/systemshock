@@ -70,6 +70,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tools.h"
 #include "trigger.h"
 #include "mouselook.h"
+#include "Prefs.h"
 
 #define MFD_FIXTURE_FLAG 0x8 // class flag for mfd fixtures
 
@@ -104,7 +105,7 @@ void zoom_mfd(int mfd, bool shifted) {
 
     extern bool DoubleSize;
 
-    if (!shifted)
+    if (!shifted && !gShockPrefs.goPersistMLook)
         mouse_look_off();
 
     ucp = use_cursor_pos;
