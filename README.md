@@ -12,22 +12,22 @@ This version of Shockolate is going to have some extra stuff. It is described be
 Added Features so far:
 ======================
 
-* **_Toggleable Persistent Mouselook_**  
+- **_Toggleable Persistent Mouselook_**  
 Default: Off  
 Description: Located in options menu. When on, your mouse will stay locked to the center of the screen when picking up an item or opening a container. I added this because I prefer to play that way, locking and unlocking the mouse manually, and so do some other people. It's mainly for muscle memory actually.
 
-* **_Keyboard Keypad Support_**  
+- **_Keyboard Keypad Support_**  
 Description: Changes in-game keypad binds to use your keyboard's keypad instead of the row of number keys at the top. That way, the number keys are still availible for toggling hardware implants.
 
-* **_Extra Digital Audio Channels_**  
+- **_Extra Digital Audio Channels_**  
 Default: 32  
 Description: Normally, you may choose from 2, 4, or 8 digital audio channels in the audio options. Now, you may additionally choose 16 or 32 channels. I added this because there are semi-rare cases when all channels are easily filled up, such as the room with all the Z-44 Plastique (TM) on the Storage level. Now I know 32 is totally overkill, but who knows? Maybe someday there will be a reason to have 32 channels.
 
 Planned and/or WIP Features:
 ============================
 
-* **_Field of View Slider_**
-* **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)
+- **_Field of View Slider_**
+- **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)
 
 Important Requirements
 ======================
@@ -35,7 +35,7 @@ Important Requirements
   - CD-ROM or SS:EE `DATA` folder in a `res` folder next to the executable
     - Floppy disk assets cannot be loaded.
   - If you have the Steam release, System Shock: Classic, you can go into `steamapps/common/SS1/SSHOCK` and find the `DATA` folder there.
-  - The `SOUND` folder may also be found there. It is optional, but required if you want music. It goes inside `res` alongside `DATA`.
+    - The `SOUND` folder may also be found there. It is optional, but required if you want music. It goes inside `res` alongside `DATA`.
 
 
 Running
