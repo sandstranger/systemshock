@@ -32,9 +32,10 @@ Planned and/or WIP Features:
 Important Requirements
 ======================
 
-  - CD-ROM or SS:EE assets in a `res/data` folder next to the executable
+  - CD-ROM or SS:EE `DATA` folder in a `res` folder next to the executable
     - Floppy disk assets cannot be loaded.
   - If you have the Steam release, System Shock: Classic, you can go into `steamapps/common/SS1/SSHOCK` and find the `DATA` folder there.
+  - The `SOUND` folder may also be found there. It is optional, but required if you want music. It goes inside `res` alongside `DATA`.
 
 
 Running
