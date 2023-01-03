@@ -7,18 +7,34 @@ Based on the source code for PowerPC released by Night Dive Studios, Incorporate
 GENERAL NOTES
 =============
 
-Shockolate is a cross platform source port of System Shock, using SDL2. This runs well on OSX, Linux, and Windows right now, with some missing features that need reviving due to not being included in the source code that was released.
+This version of Shockolate is going to have some extra stuff. It is described below.
 
-The end goal for this project is something like what Chocolate Doom is for Doom: an experience that closely mimics the original, but portable and with some quality of life improvements including an OpenGL renderer and mod support!
+Added Features so far:
+======================
 
-Join our Discord to follow along with development: https://discord.gg/m45xPan
+* **_Toggleable Persistent Mouselook_**  
+Default: Off  
+Description: Located in options menu. When on, your mouse will stay locked to the center of the screen when picking up an item or opening a container. I added this because I prefer to play that way, locking and unlocking the mouse manually, and so do some other people. It's mainly for muscle memory actually.
 
-![work so far](https://i.imgur.com/kbVWQj4.gif)
+* **_Keyboard Keypad Support_**  
+Description: Changes in-game keypad binds to use your keyboard's keypad instead of the row of number keys at the top. That way, the number keys are still availible for toggling hardware implants.
 
-Prerequisites
-=======
-  - Original cd-rom or SS:EE assets in a `res/data` folder next to the executable
-    - Floppy disk assets are an older version that we can't load currently
+* **_Extra Digital Audio Channels_**  
+Default: 32  
+Description: Normally, you may choose from 2, 4, or 8 digital audio channels in the audio options. Now, you may additionally choose 16 or 32 channels. I added this because there are semi-rare cases when all channels are easily filled up, such as the room with all the Z-44 Plastique (TM) on the Storage level. Now I know 32 is totally overkill, but who knows? Maybe someday there will be a reason to have 32 channels.
+
+Planned and/or WIP Features:
+============================
+
+* **_Field of View Slider_**
+* **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)
+
+Important Requirements
+======================
+
+  - CD-ROM or SS:EE assets in a `res/data` folder next to the executable
+    - Floppy disk assets cannot be loaded.
+  - If you have the Steam release, System Shock: Classic, you can go into `steamapps/common/SS1/SSHOCK` and find the `DATA` folder there.
 
 
 Running
@@ -26,7 +42,7 @@ Running
 
 ## From a prebuilt package
 
-Find a list of [downloadable packages](https://github.com/Interrupt/systemshock/releases/) for Linux, Mac and Windows. 32 and 64 bit versions are available for Linux and Windows.
+Currently, I have uploaded no prebuilt packages. However, I'll leave a link to the original Shockolate builds [here](https://github.com/Interrupt/systemshock/releases/).
 
 ## From source code
 
