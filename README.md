@@ -9,10 +9,16 @@ GENERAL NOTES
 
 This version of Shockolate is going to have some extra stuff. It is described below.
 
+Changes:
+========
+
+- Preferences and Keybinds are now stored in `Meeper/SystemShock` instead of `Interrupt/SystemShock` for organization purposes.
+- Field of View is 110 degrees until FOV Slider is implemented.
+
 Added Features so far:
 ======================
 
-- **_Toggleable Persistent Mouselook_**  
+- **_Toggleable Persistent Mouselook (Keep MLook)_**  
 Default: Off  
 Description: Located in options menu. When on, your mouse will stay locked to the center of the screen when picking up an item or opening a container. I added this because I prefer to play that way, locking and unlocking the mouse manually, and so do some other people. It's mainly for muscle memory actually.
 
