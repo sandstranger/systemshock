@@ -70,7 +70,7 @@ Step 1. Build the dependencies:
 
 Step 2. Build and run the game itself
 ```
-cmake .
+cmake -G "Unix Makefiles" .
 make systemshock
 ./systemshock
 ```
