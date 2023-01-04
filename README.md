@@ -40,7 +40,8 @@ Planned and/or WIP Features:
 ============================
 
 - ~~**_Field of View Slider_**~~ Finished  
-- **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)
+- **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
+- **_Quick Use/Pickup Key_**
 
 Important Requirements
 ======================
