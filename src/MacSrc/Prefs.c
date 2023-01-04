@@ -38,6 +38,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "mainloop.h"
 #include "movekeys.h"
 
+#include "fr3d.h"
+
 extern uchar mfd_button_callback_kb(ushort keycode, uint32_t context, intptr_t data);
 extern uchar hw_hotkey_callback(ushort keycode, uint32_t context, intptr_t data);
 
@@ -86,6 +88,7 @@ static const char *PREF_ALOG_SETTING = "alog-setting";
 static const char *PREF_MIDI_BACKEND = "midi-backend";
 static const char *PREF_MIDI_OUTPUT = "midi-output";
 static const char *PREF_PERSIST_MLOOK = "persist-mouselook";
+static const char *PREF_FOV = "fov";
 
 static void SetShockGlobals(void);
 
@@ -126,6 +129,8 @@ void SetDefaultPrefs(void) {
     audiolog_setting = 1;
 
 	gShockPrefs.goPersistMLook = false;
+	gShockPrefs.doFov = 80;
+	global_fov = gShockPrefs.doFov;
 
     SetShockGlobals();
 }
@@ -244,8 +249,17 @@ int16_t LoadPrefs(void) {
             int mo = atoi(value);
             if (mo >= 0)
                 gShockPrefs.soMidiOutput = (short)mo;
-		} else if (strcasecmp(key, PREF_PERSIST_MLOOK) == 0) {
-			gShockPrefs.goPersistMLook = is_true(value);
+		}
+		else if (strcasecmp(key, PREF_PERSIST_MLOOK) == 0) {
+			gShockPrefs.goPersistMLook = value;
+		} else if (strcasecmp(key, PREF_FOV) == 0) {
+			int fov = atoi(value);
+			if (fov < 70)
+				fov = 70;
+			if (fov > 135)
+				fov = 135;
+			gShockPrefs.doFov = (short)fov;
+			global_fov = gShockPrefs.doFov;
 		}
     }
 
@@ -284,6 +298,7 @@ int16_t SavePrefs(void) {
     fprintf(f, "%s = %d\n", PREF_MIDI_BACKEND, gShockPrefs.soMidiBackend);
     fprintf(f, "%s = %d\n", PREF_MIDI_OUTPUT, gShockPrefs.soMidiOutput);
 	fprintf(f, "%s = %s\n", PREF_PERSIST_MLOOK, gShockPrefs.goPersistMLook ? "yes" : "no");
+	fprintf(f, "%s = %d\n", PREF_FOV, gShockPrefs.doFov);
     fclose(f);
     return 0;
 }
@@ -544,7 +559,8 @@ HOTKEYLOOKUP HotKeyLookup[] = {
     {"\"pause\"", DEMO_CONTEXT, pause_game_func, TRUE, 0, DOWN('p'), 0},
     {"\"reload_weapon 1\"", DEMO_CONTEXT, reload_weapon_hotkey, 1, 0, CTRL(KEY_BS), 0},
     {"\"reload_weapon 0\"", DEMO_CONTEXT, reload_weapon_hotkey, 0, 0, ALT(KEY_BS), 0},
-	{ "\"reload_weapon 0\"", DEMO_CONTEXT, reload_weapon_hotkey, 0, 0, DOWN('r'), 0 },
+	{"\"reload_weapon 1\"", DEMO_CONTEXT, reload_weapon_hotkey, 1, 0, DOWN('v'), 0 },
+	{"\"reload_weapon 0\"", DEMO_CONTEXT, reload_weapon_hotkey, 0, 0, DOWN('r'), 0 },
     {"\"select_grenade\"", DEMO_CONTEXT, select_grenade_hotkey, 0, 0, CTRL('\''), 0},
     {"\"toggle_olh\"", DEMO_CONTEXT, toggle_olh_func, 0, 0, CTRL('h'), 0},
     {"\"select_drug\"", DEMO_CONTEXT, select_drug_hotkey, 0, 0, CTRL(';'), 0},

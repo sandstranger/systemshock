@@ -56,6 +56,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "olhext.h"
 #include "Xmi.h"
 #include "Prefs.h"
+#include "fr3d.h"
+#include "fovchange.h"
 
 #include "OpenGL.h"
 
@@ -81,6 +83,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HEAD_RECENTER_BUTTON 10
 #define HEADSET_BUTTON       11
 #define RENDERING_BUTTON     12
+#define MENU_BUTTON			 13
+#define RENDER_PREFS_BUTTON  14
 
 #define MOUSE_DOWN (MOUSE_LDOWN | MOUSE_RDOWN | UI_MOUSE_LDOUBLE)
 #define MOUSE_UP   (MOUSE_LUP | MOUSE_RUP)
@@ -91,6 +95,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define STATUS_Y      1
 #define STATUS_HEIGHT 20
 #define STATUS_WIDTH  312
+
+short fovsliderval = 0;
+bool fovtextactive = false;
+int fovtextid = 0;
 
 LGCursor option_cursor;
 grs_bitmap option_cursor_bmap;
@@ -129,7 +137,8 @@ void joystick_screen_init(void);
 void sound_screen_init(void);
 void soundopt_screen_init(void);
 void video_screen_init(void);
-void video_screen_first_init(void);
+void video_screen_master_init(void);
+void renderprefs_screen_init(void);
 
 uint multi_get_curval(uchar type, void *p);
 void multi_set_curval(uchar type, void *p, uint val, void *deal);
@@ -309,7 +318,7 @@ void verify_screen_init(void (*verify)(uchar butid), slorker slork);
 
 #define OPT_SLIDER_BAR REF_IMG_BeamSetting
 
-#define MAX_OPTION_BUTTONS 12
+#define MAX_OPTION_BUTTONS 15
 #define BR(i) (OButtons[i].rect)
 
 #ifdef STATIC_BUTTON_STORE
@@ -342,12 +351,20 @@ uchar fv;
 #define MIDI_OUT_STR_SIZE 1024
 static char MIDI_STR_BUFFER[MIDI_OUT_STR_SIZE];
 
+char fovtext[20];
+
 static char *_get_temp_string(int num) {
     switch (num) {
         case REF_STR_Renderer: return "Renderer";
         case REF_STR_Software: return "Software";
         case REF_STR_OpenGL:   return "OpenGL";
 		case REF_STR_Rendering:   return "Rendering";
+		case REF_STR_RenderPrefs:   return "Prefs.";
+		case REF_STR_FOV: return "Field of View";
+		case REF_STR_FOV_Value:
+			memset(fovtext, 0, sizeof(fovtext));
+			sprintf(fovtext, "%d", global_fov);
+			return fovtext;
 
         case REF_STR_TextFilt: return "Tex Filter";
         case REF_STR_TFUnfil:  return "Unfiltered";
@@ -363,6 +380,8 @@ static char *_get_temp_string(int num) {
 		case REF_STR_Digichan + 2: return "8";
 		case REF_STR_Digichan + 3: return "16";
 		case REF_STR_Digichan + 4: return "32";
+
+		case REF_STR_MainMenu: return "Main Menu";
 
         case REF_STR_Seqer:    return "Midi Player";
         case REF_STR_ADLMIDI:  return "ADLMIDI";
@@ -1185,6 +1204,8 @@ errtype wrapper_panel_close(uchar clear_message) {
         mfd_force_update_single(i);
     ResUnlock(OPTIONS_FONT);
     resume_game_time();
+	global_update_fov();
+	fovtextactive = false;
     return (OK);
 }
 
@@ -1239,11 +1260,8 @@ void wrapper_pushbutton_func(uchar butid) {
         input_screen_init();
         break;
     case VIDEO_BUTTON: // Video
-		video_screen_init();
+		video_screen_master_init();
         break;
-	case RENDERING_BUTTON:
-		video_screen_init();
-		break;
 #ifdef SVGA_SUPPORT
     case SCREENMODE_BUTTON: // Input
         screenmode_screen_init();
@@ -1265,11 +1283,23 @@ void wrapper_pushbutton_func(uchar butid) {
         break;
     case RETURN_BUTTON: // Return
         wrapper_panel_close(TRUE);
+		global_update_fov();
         break;
     case QUIT_BUTTON: // Quit
         verify_screen_init(quit_verify_pushbutton_handler, quit_verify_slorker);
         string_message_info(REF_STR_QuitConfirm);
         break;
+	case MENU_BUTTON:
+		wrapper_panel_close(TRUE);
+		_new_mode = SETUP_LOOP;
+		chg_set_flg(GL_CHG_LOOP);
+		break;
+	case RENDERING_BUTTON:
+		video_screen_init();
+		break;
+	case RENDER_PREFS_BUTTON:
+		renderprefs_screen_init();
+		break;
     }
     return;
 }
@@ -1282,10 +1312,16 @@ void wrapper_init(void) {
     keyequivs = get_temp_string(REF_STR_KeyEquivs0);
 
     clear_obuttons();
+	
     for (i = 0; i < 8; i++) {
         standard_button_rect(&r, i, 2, 3, 5);
         pushbutton_init(i, keyequivs[i], REF_STR_WrapperText + i, wrapper_pushbutton_func, &r);
     }
+	standard_button_rect(&r, 8, 2, 3, 5);
+	pushbutton_init(MENU_BUTTON, 'm', REF_STR_MainMenu, wrapper_pushbutton_func, &r);
+
+	
+
 #ifdef DEMO
     dim_pushbutton(LOAD_BUTTON);
     dim_pushbutton(SAVE_BUTTON);
@@ -1437,6 +1473,18 @@ static void midi_output_dealfunc(short val) {
     ReloadDecXMI(); // Reload Midi decoder
     soundopt_screen_init();
     (void)val;
+}
+
+short global_fov = 80;
+
+static void fov_slider_dealfunc(short val) {
+	float newval = ((float)val / 100.0f);
+	short maxfov = 135;
+	short minfov = 70;
+	short newfov = minfov + ((maxfov - minfov) * newval);
+	gShockPrefs.doFov = newfov;
+	global_fov = newfov;
+	opanel_redraw(TRUE);
 }
 
 #pragma enable_message(202)
@@ -1932,24 +1980,64 @@ void video_screen_init(void) {
     opanel_redraw(TRUE);
 }
 
-void video_screen_first_init(void) {
+void video_screen_master_init(void) {
 	LGRect r;
-	int i;
-	char *keys;
-	uchar sliderbase;
+	int i = 0;
 
-	keys = get_temp_string(REF_STR_KeyEquivs0);
 	clear_obuttons();
-	i = 0;
 
-	// video mode
+	// actual original video options
 	standard_button_rect(&r, i, 2, 2, 2);
-	pushbutton_init(RENDERING_BUTTON, keys[1], REF_STR_Rendering, wrapper_pushbutton_func, &r);
+	pushbutton_init(RENDERING_BUTTON, 'e', REF_STR_Rendering, wrapper_pushbutton_func, &r);
+
+	i++;
+
+	// new render preferences button (fov slider etc)
+	standard_button_rect(&r, i, 2, 2, 2);
+	pushbutton_init(RENDER_PREFS_BUTTON, 'p', REF_STR_RenderPrefs, wrapper_pushbutton_func, &r);
+
 	i++;
 
 	// return (fixed at position 5)
 	standard_button_rect(&r, 5, 2, 2, 2);
-	pushbutton_init(RETURN_BUTTON, keys[3], REF_STR_OptionsText + 5, wrapper_pushbutton_func, &r);
+	pushbutton_init(RETURN_BUTTON, 'r', REF_STR_OptionsText + 5, wrapper_pushbutton_func, &r);
+
+	opanel_redraw(TRUE);
+}
+
+void renderprefs_screen_init(void)
+{
+	LGRect r;
+	int i = 0;
+
+	clear_obuttons();
+
+	fovsliderval = 100 * (short)(((float)global_fov - 70.0f) / (135.0f - 70.0f));
+	standard_slider_rect(&r, i, 2, 5);
+	r.lr.x += (r.lr.x - r.ul.x);
+	r.ul.y -= 10;
+	r.lr.y -= 10;
+	slider_init(i, REF_STR_FOV, sizeof(fovsliderval), FALSE, &fovsliderval, 100,
+		0, fov_slider_dealfunc, &r);
+
+	i++;
+
+	standard_button_rect(&r, i, 1, 2, 10);
+	int textoffset = (r.lr.x - r.ul.x) * 1;
+	r.lr.x += textoffset;
+	r.ul.x += textoffset;
+	r.lr.y -= 5;
+	r.ul.y -= 5;
+	textwidget_init(i, BUTTON_COLOR, REF_STR_FOV_Value, &r);
+	fovtextactive = true;
+	fovtextid = i;
+
+	i++;
+	i++;
+	i++;
+
+	standard_button_rect(&r, 5, 2, 2, 2);
+	pushbutton_init(RETURN_BUTTON, 'r', REF_STR_OptionsText + 5, wrapper_pushbutton_func, &r);
 
 	opanel_redraw(TRUE);
 }

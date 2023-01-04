@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
     loopmode_enter(SETUP_LOOP);
 
     // Start the main loop
-
+	
     INFO("Showing main menu, starting game loop");
     mainloop(argc, argv);
 

@@ -135,6 +135,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "FrUtils.h"
 #include "fullscrn.h"
 #include "star.h"
+#include "fovchange.h"
+#include "wrapper.h"
 
 #ifdef STEREO_SUPPORT
 #include <inp6d.h>
@@ -156,6 +158,8 @@ uchar (*fr_obj_block)(void *vmptr, uchar *_sclip, int *loc);
 void (*fr_clip_start)(uchar headnorth);
 void (*fr_rend_start)(void);
 grs_bitmap *(*fr_get_tmap)(void);
+int currentwidth = 0;
+int currentheight = 0;
 
 // Set by machine type
 bool DoubleSize = false;
@@ -422,6 +426,8 @@ int fr_set_global_callbacks(int (*draw)(void *dstc, void *dstbm, int x, int y, i
 //---------------------------------------------------------------------------------
 frc *fr_place_view(frc *view, void *v_cam, void *cnvs, int pflags, char axis, int fov, int xc, int yc, int wid,
                    int hgt) {
+	currentwidth = wid;
+	currentheight = hgt;
     cams *cam = (cams *)v_cam;
     fauxrend_context *fr;
 
@@ -479,13 +485,18 @@ frc *fr_place_view(frc *view, void *v_cam, void *cnvs, int pflags, char axis, in
     fr->flags = pflags;
     fr->camptr = cam;
     if (fov == 0)
-        fov = FR_DEF_FOV;
+		fov = global_fov;
     if (axis == 0)
         axis = FR_DEF_AXIS;
     fr->viewer_zoom = g3_get_zoom(axis, build_fix_angle(fov), wid, hgt);
     fr->detail = _fr_default_detail; /* default to lowest detail level. */
     fr->last_detail = -1;            /* always need to init detail. */
     return (frc *)fr;
+}
+
+void global_update_fov()
+{
+	change_svga_screen_mode();
 }
 
 void fr_use_global_detail(frc *view) {
@@ -583,7 +594,7 @@ void _fr_change_detail(int det) {
         gr_set_per_detail_level(GR_HIGH_PER_DETAIL);
     }
     if (_fr->fov == 0)
-        fov = FR_DEF_FOV;
+		fov = global_fov;
     else
         fov = _fr->fov;
     tmpz = g3_get_zoom(FR_DEF_AXIS, fov, _fr->draw_canvas.bm.w, _fr->draw_canvas.bm.h);
