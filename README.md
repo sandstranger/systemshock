@@ -104,16 +104,40 @@ Run a fan mission from specific files:
 ./systemshock my-archive.dat my-strings.res
 ```
 
-Control modifications
+Controls
 =======
 
 ## Movement
 
-Shockolate replaces the original game's movement with WASD controls, and uses `F` as the mouselook toggle hotkey. This differs from the Enhanced Edition's usage of `E` as the mouselook hotkey, but allows us to keep `Q` and `E` available for leaning.
+- `WASD` to move
+- `F` to toggle mouselook
+- `Q` and `E` to lean left or right
+- `T`, `G` and `B` to stand, crouch, or prone
+- `SPACE` to jump
+
+## Weapons
+
+- `MOUSE2` to fire/attack with weapon
+- `R` to reload weapon
+- `V` to swap weapon ammo type
+- `TAB` to switch to next weapon
+- `SHIFT`+`TAB` to switch to previous weapon
+- `MWHEELDOWN` to switch to next weapon
+- `MWHEELUP` to switch to previous weapon
+
+## Interaction
+
+- `MOUSE1` to inspect objects
+- `MOUSE1`x2 to use/pickup objects
+
+## MFD (Multifunctional Display)
+
+- `F1`-`F10` to activate/deactivate MFD panels  
+- `1`-`10` to activate/deactivate hardware implants  
 
 ## Additional hotkeys
 
-* `Ctrl+G` cycles between graphics rendering modes
-* `Ctrl+F` to enable full screen mode
-* `Ctrl+D` to disable full screen mode 
+* `Ctrl+G` cycles between graphics rendering modes  
+* `Ctrl+F` to enable full screen mode  
+* `Ctrl+D` to disable full screen mode
 
