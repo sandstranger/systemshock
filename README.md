@@ -39,7 +39,7 @@ Description: Adds a button in the pause menu which, when clicked, will return yo
 Planned and/or WIP Features:
 ============================
 
-- **_Field of View Slider_**
+- ~~**_Field of View Slider_**~~ Finished  
 - **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)
 
 Important Requirements
