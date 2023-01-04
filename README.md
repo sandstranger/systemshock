@@ -13,7 +13,6 @@ Changes:
 ========
 
 - Preferences and Keybinds are now stored in `Meeper/SystemShock` instead of `Interrupt/SystemShock` for organization purposes.
-- Field of View is 110 degrees until FOV Slider is implemented.
 
 Added Features so far:
 ======================
@@ -28,6 +27,14 @@ Description: Changes in-game keypad binds to use your keyboard's keypad instead 
 - **_Extra Digital Audio Channels_**  
 Default: 32  
 Description: Normally, you may choose from 2, 4, or 8 digital audio channels in the audio options. Now, you may additionally choose 16 or 32 channels. I added this because there are semi-rare cases when all channels are easily filled up, such as the room with all the Z-44 Plastique (TM) on the Storage level. Now I know 32 is totally overkill, but who knows? Maybe someday there will be a reason to have 32 channels.
+
+- **_Field of View Slider_**  
+**IMPORTANT WARNING**: Setting the FOV to ANYTHING other than the default (80) is PROVEN to cause crashes in certain areas ONLY WHEN USING THE OPENGL RENDERER. I'm not sure why this happens, but hopefully I can figure out a fix soon. For now, do not change the FOV from 80 unless you play with the Software Renderer.
+Default: 80  
+Description: Adds an FOV slider that ranges from 70 to 135.
+
+- **_Main Menu Button_**
+Description: Adds a button in the pause menu which, when clicked, will return you right to the main menu. This allows starting a new game without having to restart the application. 
 
 Planned and/or WIP Features:
 ============================
