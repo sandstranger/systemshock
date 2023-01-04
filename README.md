@@ -15,6 +15,7 @@ Changes:
 - Preferences and Keybinds are now stored in `Meeper/SystemShock` instead of `Interrupt/SystemShock` for organization purposes.
 - New or changed Controls/Keybinds are outlined at the bottom of this readme file.
 - Added an optional window icon: shock.bmp. I made a default one that comes with the source code and will work as long as it is in the same folder as the executable, which it is by default. You may delete it or replace it with your own if you choose.
+- There is also a Windows only (I think at least. I'm getting a Linux VM soon so I can see how icons work there) icon.rc file for use when building systemshock.exe. If it doesn't compile or something and you can't figure out a fix, remove the WIN32_RESOURCES variable from line 388 of CMakeLists.txt. This will build the executable without an icon.
 
 Added Features so far:
 ======================
