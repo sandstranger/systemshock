@@ -13,6 +13,7 @@ Changes:
 ========
 
 - Preferences and Keybinds are now stored in `Meeper/SystemShock` instead of `Interrupt/SystemShock` for organization purposes.
+- New or changed Controls/Keybinds are outlined at the bottom of this readme file.
 
 Added Features so far:
 ======================
@@ -36,12 +37,16 @@ Description: Located in video options menu. Adds an FOV slider that ranges from 
 - **_Main Menu Button_**  
 Description: Located in the pause menu. This button will return you directly to the main menu that is shown upon starting the game. Keep in mind that it will not ask for confirmation and instead will immediately send you there upon clicking it.
 
+- **_Quick Use/Pickup Key_**  
+Default: `c`  
+Description: Adds a key which will instantly pickup and add an object you are looking at to your inventory, or use the object if it cannot be picked up.
+
 Planned and/or WIP Features:
 ============================
 
 - ~~**_Field of View Slider_**~~ Finished  
 - **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
-- **_Quick Use/Pickup Key_**
+- ~~**_Quick Use/Pickup Key_**~~ Finished
 
 Important Requirements
 ======================
@@ -129,6 +134,7 @@ Controls
 
 - `MOUSE1` to inspect objects
 - `MOUSE1`x2 to use/pickup objects
+- `c` to use/put object into inventory
 
 ## MFD (Multifunctional Display)
 
