@@ -9,6 +9,11 @@ include(FeatureSummary)
 set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB32_PATHS OFF)
 set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS ON)
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    enable_language("RC")
+    set (WIN32_RESOURCES ${CMAKE_SOURCE_DIR}/icon.rc)
+endif()
+
 # Required for stdbool.h
 set(CMAKE_C_STANDARD 99)
 # For nullptr in C++
@@ -380,9 +385,7 @@ add_definitions(
 	-include precompiled.h
 )
 
-add_executable(systemshock
-	${MAC_SRC}
-)
+add_executable(systemshock ${MAC_SRC} ${WIN32_RESOURCES})
 
 add_library(GAME_LIB ${GAME_SRC})
 
