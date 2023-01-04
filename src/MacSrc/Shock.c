@@ -199,7 +199,8 @@ void InitSDL() {
                               SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL);
 
 	SDL_Surface* appicon = SDL_LoadBMP("shock.bmp");
-	SDL_SetWindowIcon(window, appicon);
+	if (appicon)
+		SDL_SetWindowIcon(window, appicon);
 
     // Create the palette
 
