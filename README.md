@@ -19,7 +19,7 @@ Added Features so far:
 
 - **_Toggleable Persistent Mouselook (Keep MLook)_**  
 Default: Off  
-Description: Located in options menu. When on, your mouse will stay locked to the center of the screen when picking up an item or opening a container. I added this because I prefer to play that way, locking and unlocking the mouse manually, and so do some other people. It's mainly for muscle memory actually.
+Description: Located in the options menu. When on, your mouse will stay locked to the center of the screen when picking up an item or opening a container. I added this because I prefer to play that way, locking and unlocking the mouse manually, and so do some other people. It's mainly for muscle memory actually.
 
 - **_Keyboard Keypad Support_**  
 Description: Changes in-game keypad binds to use your keyboard's keypad instead of the row of number keys at the top. That way, the number keys are still availible for toggling hardware implants.
@@ -31,10 +31,10 @@ Description: Normally, you may choose from 2, 4, or 8 digital audio channels in 
 - **_Field of View Slider_**  
 **IMPORTANT WARNING: Setting the FOV to ANYTHING other than the default (80) is PROVEN to cause crashes in certain areas ONLY WHEN USING THE OPENGL RENDERER. I'm not sure why this happens, but hopefully I can figure out a fix soon. For now, do not change the FOV from 80 unless you play with the Software Renderer.**  
 Default: 80  
-Description: Adds an FOV slider that ranges from 70 to 135 degrees.
+Description: Located in video options menu. Adds an FOV slider that ranges from 70 to 135 degrees.
 
 - **_Main Menu Button_**
-Description: Adds a button in the pause menu which, when clicked, will return you right to the main menu. This allows starting a new game without having to restart the application. 
+Description: Located in the pause menu. This button will return you directly to the main menu that is shown upon starting the game. Keep in mind that it will not ask for confirmation and instead will immediately send you there upon clicking it.
 
 Planned and/or WIP Features:
 ============================
