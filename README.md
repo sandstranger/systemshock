@@ -33,7 +33,7 @@ Description: Normally, you may choose from 2, 4, or 8 digital audio channels in 
 Default: 80  
 Description: Located in video options menu. Adds an FOV slider that ranges from 70 to 135 degrees.
 
-- **_Main Menu Button_**
+- **_Main Menu Button_**  
 Description: Located in the pause menu. This button will return you directly to the main menu that is shown upon starting the game. Keep in mind that it will not ask for confirmation and instead will immediately send you there upon clicking it.
 
 Planned and/or WIP Features:
