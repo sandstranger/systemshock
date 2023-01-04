@@ -184,6 +184,8 @@ uchar use_drug_hotkey(ushort keycode, uint32_t context, intptr_t data);
 
 uchar toggle_mouse_look(ushort keycode, uint32_t context, intptr_t data);
 
+uchar quick_use(ushort keycode, uint32_t context, intptr_t data);
+
 // uchar (ushort keycode, uint32_t context, intptr_t data);
 
 // Globals

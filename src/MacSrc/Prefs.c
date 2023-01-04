@@ -523,6 +523,8 @@ extern uchar toggle_giveall_func(ushort keycode, uint32_t context, intptr_t data
 extern uchar toggle_physics_func(ushort keycode, uint32_t context, intptr_t data);
 extern uchar toggle_up_level_func(ushort keycode, uint32_t context, intptr_t data);
 extern uchar toggle_down_level_func(ushort keycode, uint32_t context, intptr_t data);
+// quick-use hotkey
+extern uchar quick_use(ushort keycode, uint32_t context, intptr_t data);
 
 #define TAB_KEY (KEY_TAB | KB_FLAG_DOWN)
 #define S_TAB_KEY (KEY_TAB | KB_FLAG_DOWN | KB_FLAG_SHIFT)
@@ -601,6 +603,11 @@ HOTKEYLOOKUP HotKeyLookup[] = {
     {"\"cheat_physics\"", DEMO_CONTEXT, toggle_physics_func, TRUE, 0, CTRL('3'), 0},
     {"\"cheat_up_level\"", DEMO_CONTEXT, toggle_up_level_func, TRUE, 0, CTRL('4'), 0},
     {"\"cheat_down_level\"", DEMO_CONTEXT, toggle_down_level_func, TRUE, 0, CTRL('5'), 0},
+
+	{ "\"quick_use\"", DEMO_CONTEXT, quick_use, 0, 0, DOWN('c'), 0 },
+	{ "\"quick_use\"", DEMO_CONTEXT, quick_use, 0, 0, CTRL('c'), 0 },
+	{ "\"quick_use\"", DEMO_CONTEXT, quick_use, 0, 0, SHIFT('c'), 0 },
+	{ "\"quick_use\"", DEMO_CONTEXT, quick_use, 0, 0, ALT('c'), 0 },
 
     {NULL, 0, 0, 0}};
 
@@ -770,13 +777,9 @@ static MOVE_KEYBIND MoveKeybindsDefault[] =
   { CODE_UP       | KB_FLAG_ALT  , M_RUNFORWARD    },
   { CODE_W                       , M_FORWARD       },
   { CODE_UP                      , M_FORWARD       },
-  { CODE_Z        | KB_FLAG_SHIFT, M_FASTTURNLEFT  },
   { CODE_LEFT     | KB_FLAG_SHIFT, M_FASTTURNLEFT  },
-  { CODE_Z                       , M_TURNLEFT      },
   { CODE_LEFT                    , M_TURNLEFT      },
-  { CODE_C        | KB_FLAG_SHIFT, M_FASTTURNRIGHT },
   { CODE_RIGHT    | KB_FLAG_SHIFT, M_FASTTURNRIGHT },
-  { CODE_C                       , M_TURNRIGHT     },
   { CODE_RIGHT                   , M_TURNRIGHT     },
   { CODE_S                       , M_BACK          },
   { CODE_S        | KB_FLAG_SHIFT, M_BACK          },

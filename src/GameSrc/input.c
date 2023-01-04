@@ -2149,6 +2149,15 @@ void view3d_dclick(LGPoint pos, frc *fr, bool shifted) {
     }
 }
 
+// ach Gott...
+view3d_data* jankdata;
+
+uchar quick_use(ushort keycode, uint32_t context, intptr_t data)
+{
+	LGPoint jankpoint = MakePoint(grd_cap->w * 0.5, grd_cap->h * 0.5);
+	view3d_dclick(jankpoint, jankdata->fr, TRUE);
+}
+
 // -------------------------------------------------------------------------------
 // view3d_mouse_handler is the actual installed mouse handler, dispatching to the above functions
 uchar view3d_mouse_handler(uiEvent *ev, LGRegion *r, intptr_t v) {
@@ -2159,6 +2168,9 @@ uchar view3d_mouse_handler(uiEvent *ev, LGRegion *r, intptr_t v) {
     LGPoint pt;
     LGPoint evp = ev->pos;
     extern int _fr_glob_flags;
+
+	// update this atrocity
+	jankdata = data;
 
     pt = evp;
 
