@@ -237,7 +237,7 @@ void SetSDLPalette(int index, int count, uchar *pal) {
     static bool gammalut_init = 0;
     static uchar gammalut[100 - 10 + 1][256];
     if (!gammalut_init) {
-        double factor = (can_use_opengl() ? 1.0 : 2.2); // OpenGL uses 2.2
+		double factor = 2.2;// (can_use_opengl() ? 1.0 : 2.2); // OpenGL uses 2.2
         int i, j;
         for (i = 10; i <= 100; i++) {
             double gamma = (double)i * 1.0 / 100;
@@ -268,9 +268,9 @@ void SetSDLPalette(int index, int count, uchar *pal) {
 
     if (!UseCutscenePalette) {
         // Hack black!
-        gamePalette[255].r = 0x0;
-        gamePalette[255].g = 0x0;
-        gamePalette[255].b = 0x0;
+		gamePalette[255].r = 0x0;
+		gamePalette[255].g = 0x0;
+		gamePalette[255].b = 0x0;
         gamePalette[255].a = 0xff;
     }
 
@@ -291,7 +291,7 @@ void SDLDraw() {
 
     if (should_opengl_swap()) {
         sdlPalette->colors[255].a = 0xff;
-        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
     }
 
     SDL_Rect srcRect = {0, 0, gScreenWide, gScreenHigh};

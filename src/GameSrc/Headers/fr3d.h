@@ -34,7 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define FR_PT_CNT   256
 #define FR_DEF_FOV 110
-extern short global_fov;
 #define FR_DEF_AXIS 'X'
 
 #define AXIS_ORDER AXIS_RIGHT, AXIS_DOWN, AXIS_IN

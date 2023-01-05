@@ -27,9 +27,11 @@ void main() {
     } else {
         float emissive = t.a > 0.5 ? (t.a - 0.5) * 2.0 : 0.0;
         float light = max(Light * Light, emissive);
+		
         if (mutant)
             gl_FragColor = vec4(0.5 * t.r * light, 0.5 * t.r * light, 0.5 * t.r * light, 0.2 * alpha);
         else
             gl_FragColor = vec4(t.r * light, t.g * light, t.b * light, alpha);
     }
+	
 }

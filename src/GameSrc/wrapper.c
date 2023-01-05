@@ -1476,14 +1476,16 @@ static void midi_output_dealfunc(short val) {
 }
 
 short global_fov = 80;
+short saved_fov = 80;
 
 static void fov_slider_dealfunc(short val) {
 	float newval = ((float)val / 100.0f);
-	short maxfov = 135;
-	short minfov = 70;
+	short maxfov = max_fov;
+	short minfov = min_fov;
 	short newfov = minfov + ((maxfov - minfov) * newval);
 	gShockPrefs.doFov = newfov;
-	global_fov = newfov;
+	saved_fov = newfov;
+	global_fov = gShockPrefs.doUseOpenGL ? 80 : newfov;
 	opanel_redraw(TRUE);
 }
 
@@ -1920,6 +1922,12 @@ void video_screen_init(void) {
     clear_obuttons();
     i = 0;
 
+	if (gShockPrefs.doUseOpenGL)
+		global_fov = 80;
+	else
+		global_fov = gShockPrefs.doFov;
+	global_update_fov();
+	
 #ifdef USE_OPENGL
     // renderer
     if(can_use_opengl()) {
@@ -2012,7 +2020,7 @@ void renderprefs_screen_init(void)
 
 	clear_obuttons();
 
-	fovsliderval = 100 * (short)(((float)global_fov - 70.0f) / (135.0f - 70.0f));
+	fovsliderval = 100 * (short)(((float)global_fov - min_fov) / (max_fov - min_fov));
 	standard_slider_rect(&r, i, 2, 5);
 	r.lr.x += (r.lr.x - r.ul.x);
 	r.ul.y -= 10;
