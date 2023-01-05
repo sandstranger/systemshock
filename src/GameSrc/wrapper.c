@@ -1922,21 +1922,23 @@ void video_screen_init(void) {
     clear_obuttons();
     i = 0;
 
-	if (gShockPrefs.doUseOpenGL)
-		global_fov = 80;
-	else
-		global_fov = gShockPrefs.doFov;
-	global_update_fov();
+	global_fov = gShockPrefs.doFov;
 	
 #ifdef USE_OPENGL
     // renderer
     if(can_use_opengl()) {
+
+		if (gShockPrefs.doUseOpenGL)
+			global_fov = 80;
+
         standard_button_rect(&r, i, 2, 2, 2);
         multi_init(i, 'g', REF_STR_Renderer, REF_STR_Software, ID_NULL,
                    sizeof(gShockPrefs.doUseOpenGL), &gShockPrefs.doUseOpenGL, 2, renderer_dealfunc, &r);
         i++;
     }
 #endif
+
+	global_update_fov();
 
 #ifdef SVGA_SUPPORT
     // video mode

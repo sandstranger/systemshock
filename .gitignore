@@ -60,4 +60,6 @@ savgam*.dat
 .cproject
 
 # other stuff
-.aps
+*.aps
+prefs.txt
+keybinds.txt

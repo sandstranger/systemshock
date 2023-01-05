@@ -59,6 +59,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "game_screen.h" // was screen.h?
 #include "Shock.h"
 
+#include "fovchange.h"
+
 #ifdef NOT_YET // KLC stereo
 
 #include <config.h>
@@ -332,6 +334,18 @@ void change_svga_screen_mode() {
     // KLC	gamma_dealfunc(QUESTVAR_GET(GAMMACOR_QVAR));
     gamma_dealfunc(gShockPrefs.doGamma);
     redraw_paused = TRUE;
+}
+
+void global_update_fov()
+{
+	if (full_game_3d)
+		fullscreen_start();
+	else
+	{
+		fullscreen_start();
+		fullscreen_exit();
+		change_svga_screen_mode();
+	}
 }
 
 void fullscreen_start() {

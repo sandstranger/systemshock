@@ -135,8 +135,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "FrUtils.h"
 #include "fullscrn.h"
 #include "star.h"
-#include "fovchange.h"
 #include "wrapper.h"
+#include "fovchange.h"
 
 #ifdef STEREO_SUPPORT
 #include <inp6d.h>
@@ -492,11 +492,6 @@ frc *fr_place_view(frc *view, void *v_cam, void *cnvs, int pflags, char axis, in
     fr->detail = _fr_default_detail; /* default to lowest detail level. */
     fr->last_detail = -1;            /* always need to init detail. */
     return (frc *)fr;
-}
-
-void global_update_fov()
-{
-	change_svga_screen_mode();
 }
 
 void fr_use_global_detail(frc *view) {
