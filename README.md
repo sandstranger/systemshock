@@ -32,9 +32,9 @@ Default: 32
 Description: Normally, you may choose from 2, 4, or 8 digital audio channels in the audio options. Now, you may additionally choose 16 or 32 channels. I added this because there are semi-rare cases when all channels are easily filled up, such as the room with all the Z-44 Plastique (TM) on the Storage level. Now I know 32 is totally overkill, but who knows? Maybe someday there will be a reason to have 32 channels.
 
 - **_Field of View Slider_**  
-**IMPORTANT WARNING: Setting the FOV to ANYTHING other than the default (80) is PROVEN to cause crashes in certain areas ONLY WHEN USING THE OPENGL RENDERER. I'm not sure why this happens, but hopefully I can figure out a fix soon. For now, do not change the FOV from 80 unless you play with the Software Renderer.**  
 Default: 80  
-Description: Located in video options menu. Adds an FOV slider that ranges from 70 to 135 degrees.
+Description: Located in video options menu. Adds an FOV slider that ranges from 70 to 135 degrees.  
+Note: FOV cannot be changed while using the OpenGL renderer. It will stay at the default 80. This is because changing FOV causes a crash in certain areas when using the OpenGL renderer.
 
 - **_Main Menu Button_**  
 Description: Located in the pause menu. This button will return you directly to the main menu that is shown upon starting the game. Keep in mind that it will not ask for confirmation and instead will immediately send you there upon clicking it.
@@ -46,8 +46,8 @@ Description: Adds a key which will instantly pickup and add an object you are lo
 Planned and/or WIP Features:
 ============================
 
-- ~~**_Field of View Slider_**~~ Finished  
 - **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
+- ~~**_Field of View Slider_**~~ Finished  
 - ~~**_Quick Use/Pickup Key_**~~ Finished
 
 Important Requirements
