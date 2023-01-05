@@ -49,6 +49,7 @@ Planned and/or WIP Features:
 - **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
 - ~~**_Field of View Slider_**~~ Finished  
 - ~~**_Quick Use/Pickup Key_**~~ Finished
+- **_Mouselook Pausing Player State Change Fix_** (this is an issue where you cannot lean or change stance while mouselooking horizontally)
 
 Important Requirements
 ======================
