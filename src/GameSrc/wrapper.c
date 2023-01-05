@@ -363,7 +363,7 @@ static char *_get_temp_string(int num) {
 		case REF_STR_FOV: return "Field of View";
 		case REF_STR_FOV_Value:
 			memset(fovtext, 0, sizeof(fovtext));
-			sprintf(fovtext, "%d", global_fov);
+			sprintf(fovtext, "%d", saved_fov);
 			return fovtext;
 
         case REF_STR_TextFilt: return "Tex Filter";
@@ -1731,8 +1731,13 @@ static void renderer_dealfunc(bool unused) {
         opanel_redraw(FALSE);
     }
     uiShowMouse(NULL);
+
     // recalculate menu in case a button needs to be added or removed
-    video_screen_init();
+	wrapper_panel_close(TRUE);
+	global_update_fov();
+	wrapper_start(wrapper_init);
+	video_screen_init();
+
     // suppress compiler warning
     (void)unused;
 }
@@ -1937,8 +1942,6 @@ void video_screen_init(void) {
         i++;
     }
 #endif
-
-	global_update_fov();
 
 #ifdef SVGA_SUPPORT
     // video mode
