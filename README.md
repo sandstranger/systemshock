@@ -40,7 +40,7 @@ Note: FOV cannot be changed while using the OpenGL renderer. It will stay at the
 Description: Located in the pause menu. This button will return you directly to the main menu that is shown upon starting the game. Keep in mind that it will not ask for confirmation and instead will immediately send you there upon clicking it.
 
 - **_Quick Use/Pickup Key_**  
-Default: `c`  
+Default: `C`  
 Description: Adds a key which will instantly pickup and add an object you are looking at to your inventory, or use the object if it cannot be picked up.
 
 Planned and/or WIP Features:
@@ -65,7 +65,7 @@ Running
 
 ## From a prebuilt package
 
-Currently, I have uploaded no prebuilt packages. However, I'll leave a link to the original Shockolate builds [here](https://github.com/Interrupt/systemshock/releases/).
+Currently, I only have the ability to build for Windows. The releases can be found [here](https://github.com/MeeperTheGreat99/systemshock-enhanced/releases). However, I'll leave a link to the original Shockolate builds as well, [here](https://github.com/Interrupt/systemshock/releases/).
 
 ## From source code
 
