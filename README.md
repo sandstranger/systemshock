@@ -1,4 +1,4 @@
-Shockolate - System Shock, but cross platform!
+System Shock Enhanced - based on Shockolate
 ============================
 Based on the source code for PowerPC released by Night Dive Studios, Incorporated.
 
@@ -46,10 +46,10 @@ Description: Adds a key which will instantly pickup and add an object you are lo
 Planned and/or WIP Features:
 ============================
 
-- **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
 - ~~**_Field of View Slider_**~~ Finished  
-- ~~**_Quick Use/Pickup Key_**~~ Finished
-- **_Mouselook Pausing Player State Change Fix_** (this is an issue where you cannot lean or change stance while mouselooking horizontally)
+- ~~**_Quick Use/Pickup Key_**~~ Finished  
+- **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
+- **_Mouselook Pausing Stance Change Fix_** (this is an issue where you cannot lean or change stance while mouselooking horizontally)
 
 Important Requirements
 ======================
@@ -137,7 +137,7 @@ Controls
 
 - `MOUSE1` to inspect objects
 - `MOUSE1`x2 to use/pickup objects
-- `c` to use/put object into inventory
+- `C` to use/put object into inventory
 
 ## MFD (Multifunctional Display)
 
