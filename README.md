@@ -50,6 +50,7 @@ Planned and/or WIP Features:
 - ~~**_Quick Use/Pickup Key_**~~ Finished  
 - **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
 - **_Mouselook Pausing Stance Change Fix_** (this is an issue where you cannot lean or change stance while mouselooking horizontally)
+- **_Fullscreen Video Option & `-windowed` or `-fullscreen` launch options_**
 
 Important Requirements
 ======================
