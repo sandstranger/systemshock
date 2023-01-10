@@ -43,14 +43,18 @@ Description: Located in the pause menu. This button will return you directly to 
 Default: `C`  
 Description: Adds a key which will instantly pickup and add an object you are looking at to your inventory, or use the object if it cannot be picked up.
 
+- **_Fullscreen Video Option_**  
+Default: Off  
+Description: Located in the video prefs menu. Adds a button which toggles fullscreen and saves your preference inside the prefs file. Pressing `Alt+Enter` also saves the new fullscreen state. The launch options, `-fullscreen` or `-windowed` may also be specified when starting the game in order to run in the selected mode. Setting launch options will not change the saved mode in the prefs file.
+
 Planned and/or WIP Features:
 ============================
 
 - ~~**_Field of View Slider_**~~ Finished  
 - ~~**_Quick Use/Pickup Key_**~~ Finished  
+- ~~**_Fullscreen Video Option & `-windowed` or `-fullscreen` launch options_**~~ Finished
 - **_Widescreen Resolutions and Custom Width/Height Resolutions_** (Don't expect that anytime soon, I'm quite new to this. But I'll do my best.)  
 - **_Mouselook Pausing Stance Change Fix_** (this is an issue where you cannot lean or change stance while mouselooking horizontally)
-- **_Fullscreen Video Option & `-windowed` or `-fullscreen` launch options_**
 
 Important Requirements
 ======================
@@ -97,7 +101,9 @@ If you find yourself needing to modify the build script for Shockolate itself, `
 Command line parameters
 ============
 
-`-nosplash` Disables the splash screens, causes the game to start straight to the main menu
+`-nosplash` Disables the splash screens, causes the game to start straight to the main menu  
+`-fullscreen` Forces the game to start in fullscreen mode  
+`-windowed` Forces the game to start in windowed mode
 
 Modding Support
 ============
