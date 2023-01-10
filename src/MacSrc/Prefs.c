@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "fr3d.h"
 #include "fovchange.h"
+#include "fullscrntogg.h"
 
 short max_fov = 135;
 short min_fov = 70;
@@ -93,6 +94,7 @@ static const char *PREF_MIDI_BACKEND = "midi-backend";
 static const char *PREF_MIDI_OUTPUT = "midi-output";
 static const char *PREF_PERSIST_MLOOK = "persist-mouselook";
 static const char *PREF_FOV = "fov";
+static const char *PREF_FULLSCREEN = "fullscreen";
 
 static void SetShockGlobals(void);
 
@@ -127,6 +129,7 @@ void SetDefaultPrefs(void) {
     gShockPrefs.doDetail = 3;     // Max detail.
     gShockPrefs.doUseOpenGL = false;
     gShockPrefs.doTextureFilter = 0; // unfiltered
+	gShockPrefs.doFullscreen = false; // Windowed mode
     gShockPrefs.goOnScreenHelp = true;
     gShockPrefs.doGamma = 29;    // Default gamma (29 out of 100).
     gShockPrefs.goMsgLength = 0; // Normal
@@ -256,7 +259,7 @@ int16_t LoadPrefs(void) {
                 gShockPrefs.soMidiOutput = (short)mo;
 		}
 		else if (strcasecmp(key, PREF_PERSIST_MLOOK) == 0) {
-			gShockPrefs.goPersistMLook = value;
+			gShockPrefs.goPersistMLook = is_true(value);
 		} else if (strcasecmp(key, PREF_FOV) == 0) {
 			int fov = atoi(value);
 			if (fov < min_fov)
@@ -266,6 +269,8 @@ int16_t LoadPrefs(void) {
 			gShockPrefs.doFov = (short)fov;
 			saved_fov = gShockPrefs.doFov;
 			global_fov = gShockPrefs.doUseOpenGL ? 80 : gShockPrefs.doFov;
+		} else if (strcasecmp(key, PREF_FULLSCREEN) == 0) {
+			gShockPrefs.doFullscreen = is_true(value);
 		}
     }
 
@@ -305,6 +310,7 @@ int16_t SavePrefs(void) {
     fprintf(f, "%s = %d\n", PREF_MIDI_OUTPUT, gShockPrefs.soMidiOutput);
 	fprintf(f, "%s = %s\n", PREF_PERSIST_MLOOK, gShockPrefs.goPersistMLook ? "yes" : "no");
 	fprintf(f, "%s = %d\n", PREF_FOV, gShockPrefs.doFov);
+	fprintf(f, "%s = %s\n", PREF_FULLSCREEN, gShockPrefs.doFullscreen ? "yes" : "no");
     fclose(f);
     return 0;
 }

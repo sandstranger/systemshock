@@ -58,6 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Prefs.h"
 #include "fr3d.h"
 #include "fovchange.h"
+#include "fullscrntogg.h"
 
 #include "OpenGL.h"
 
@@ -365,6 +366,7 @@ static char *_get_temp_string(int num) {
 			memset(fovtext, 0, sizeof(fovtext));
 			sprintf(fovtext, "%d", saved_fov);
 			return fovtext;
+		case REF_STR_Fullscreen: return "Fullscreen";
 
         case REF_STR_TextFilt: return "Tex Filter";
         case REF_STR_TFUnfil:  return "Unfiltered";
@@ -1742,6 +1744,14 @@ static void renderer_dealfunc(bool unused) {
     (void)unused;
 }
 
+void fullscreen_dealfunc()
+{
+	if (gShockPrefs.doFullscreen)
+		enterFullscreen(false);
+	else
+		exitFullscreen(false);
+}
+
 void detail_dealfunc(uchar det) {
 
     change_detail_level(det);
@@ -2047,6 +2057,11 @@ void renderprefs_screen_init(void)
 
 	i++;
 	i++;
+
+	standard_button_rect(&r, i, 2, 2, 2);
+	multi_init(i, 'f', REF_STR_Fullscreen, REF_STR_OffonText, ID_NULL,
+		sizeof(gShockPrefs.doFullscreen), &(gShockPrefs.doFullscreen), 2, fullscreen_dealfunc, &r);
+
 	i++;
 
 	standard_button_rect(&r, 5, 2, 2, 2);

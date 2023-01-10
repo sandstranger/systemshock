@@ -26,6 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "kb.h"
 #include "mouse.h"
 #include "keypadinput.h"
+#include "fullscrntogg.h"
+#include "Prefs.h"
 #include <stdlib.h>
 #include <SDL.h>
 #include <OpenGL.h>
@@ -36,12 +38,31 @@ extern SDL_Renderer *renderer;
 
 bool fullscreenActive = false;
 
-static void toggleFullScreen() {
+void toggleFullScreen() {
     fullscreenActive = !fullscreenActive;
+	gShockPrefs.doFullscreen = fullscreenActive;
     SDL_SetWindowFullscreen(window, fullscreenActive ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 
     if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_MAXIMIZED))
         SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	SavePrefs();
+}
+
+void enterFullscreen(bool changePref)
+{
+	fullscreenActive = true;
+	if (changePref)
+		gShockPrefs.doFullscreen = fullscreenActive;
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+void exitFullscreen(bool changePref)
+{
+	fullscreenActive = false;
+	if (changePref)
+		gShockPrefs.doFullscreen = fullscreenActive;
+	SDL_SetWindowFullscreen(window, 0);
+	SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 }
 
 // current state of the keys, based on the SystemShock/Mac Keycodes (sshockKeyStates[keyCode] has the state for that

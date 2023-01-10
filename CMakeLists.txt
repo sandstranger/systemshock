@@ -385,7 +385,7 @@ add_definitions(
 	-include precompiled.h
 )
 
-add_executable(systemshock ${MAC_SRC} ${WIN32_RESOURCES})
+add_executable(systemshock ${MAC_SRC})
 
 add_library(GAME_LIB ${GAME_SRC})
 

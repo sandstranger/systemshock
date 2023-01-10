@@ -250,7 +250,7 @@ void EDMS_holistic_teleport(physics_handle ph, State *s) {
 
         //	First, get rid of the collision hash reference (in state since frame is over)...
         //	=====================================================
-        state_delete_object(on);
+		state_delete_object(on);
 
         //	Now move the thing...
         //	=====================

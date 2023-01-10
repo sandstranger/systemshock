@@ -32,7 +32,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "InitMac.h"
 #include "Modding.h"
+#ifdef USE_OPENGL
 #include "OpenGL.h"
+#endif
 #include "Prefs.h"
 #include "Shock.h"
 #include "ShockBitmap.h"
@@ -46,10 +48,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "status.h"
 #include "version.h"
 
+#include "fullscrntogg.h"
+
 //--------------------
 //  Globals
 //--------------------
 bool gPlayingGame;
+bool gFullscreenArg;
+bool gWindowedArg;
 
 grs_screen *cit_screen;
 SDL_Window *window;
@@ -107,9 +113,17 @@ int main(int argc, char **argv) {
     LoadHotkeyKeybinds();
     LoadMoveKeybinds();
 
+	if (gShockPrefs.doFullscreen)
+		enterFullscreen(false);
+
     // Process some startup arguments
 
     bool show_splash = !CheckArgument("-nosplash");
+
+	if (CheckArgument("-fullscreen"))
+		enterFullscreen(false);
+	if (CheckArgument("-windowed"))
+		exitFullscreen(false);
 
     // CC: Modding support! This is so exciting.
 
@@ -223,8 +237,9 @@ void InitSDL() {
     SDL_RenderSetLogicalSize(renderer, grd_cap->w, grd_cap->h);
 
     // Startup OpenGL
-
+#ifdef USE_OPENGL
     init_opengl();
+#endif
 
     SDLDraw();
 
@@ -277,33 +292,43 @@ void SetSDLPalette(int index, int count, uchar *pal) {
     SDL_SetPaletteColors(sdlPalette, gamePalette, 0, 256);
     SDL_SetSurfacePalette(drawSurface, sdlPalette);
     SDL_SetSurfacePalette(offscreenDrawSurface, sdlPalette);
-
+#ifdef USE_OPENGL
     if (should_opengl_swap())
         opengl_change_palette();
+#endif
 }
 
 void SDLDraw() {
+#ifdef USE_OPENGL
     if (should_opengl_swap()) {
         sdlPalette->colors[255].a = 0x00;
     }
+#endif
 
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, drawSurface);
 
+#ifdef USE_OPENGL
     if (should_opengl_swap()) {
         sdlPalette->colors[255].a = 0xff;
 		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
     }
+#endif
 
     SDL_Rect srcRect = {0, 0, gScreenWide, gScreenHigh};
     SDL_RenderCopy(renderer, texture, &srcRect, NULL);
     SDL_DestroyTexture(texture);
 
+#ifdef USE_OPENGL
     if (should_opengl_swap()) {
         opengl_swap_and_restore();
     } else {
         SDL_RenderPresent(renderer);
         SDL_RenderClear(renderer);
     }
+#else
+	SDL_RenderPresent(renderer);
+	SDL_RenderClear(renderer);
+#endif
 }
 
 bool MouseCaptured = FALSE;

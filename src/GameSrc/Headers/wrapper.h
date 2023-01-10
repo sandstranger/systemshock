@@ -107,6 +107,7 @@ enum TEMP_STR_ {
 	REF_STR_RenderPrefs,
 	REF_STR_FOV,
 	REF_STR_FOV_Value,
+	REF_STR_Fullscreen,
 
     REF_STR_TextFilt = 0x10000010,
     REF_STR_TFUnfil, // unfiltered
