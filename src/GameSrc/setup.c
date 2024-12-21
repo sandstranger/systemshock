@@ -54,6 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "wrapper.h"
 #include "verify.h"
 #include "sdl_events.h"
+#include "input_sdl_events.h"
 #include "cybstrng.h"
 #include "gamestrn.h"
 

@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Shock.h"
 #include "palfx.h"
 #include "sdl_events.h"
+#include "input_sdl_events.h"
 
 
 byte pal_fade_id;

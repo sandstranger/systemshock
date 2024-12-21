@@ -47,6 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "doorparm.h"
 #include "render.h"
 #include "sdl_events.h"
+#include "input_sdl_events.h"
 #include "strwrap.h"
 #include "tools.h"
 #include "trigger.h"

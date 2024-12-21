@@ -56,7 +56,13 @@ if(ENABLE_OPENGL)
 	endif(WIN32)
 endif(ENABLE_OPENGL)
 
-if(ENABLE_SDL2 MATCHES "ON")
+if (ANDROID)
+#	find_library(SDL2_LIBRARY SDL2 PATHS ${SDL2_DIR}/lib NO_DEFAULT_PATH)
+#	find_library(SDL2MAIN_LIBRARY SDL2main PATHS ${SDL2_DIR}/lib NO_DEFAULT_PATH)
+	set(SDL2_INCLUDE_DIRS ${SDL2_DIR}/include)
+	set(SDL2_LIBRARIES "${SDL2MAIN_LIBRARY};${SDL2_LIBRARY}")
+else ()
+	if(ENABLE_SDL2 MATCHES "ON")
 	find_package(SDL2 REQUIRED)
 	if(SDL2_FOUND)
 		message(STATUS "SDL2 found: ${SDL2_INCLUDE_DIRS} ${SDL2_LIBRARIES}")
@@ -69,10 +75,16 @@ if(ENABLE_SDL2 MATCHES "BUNDLED")
 	set(SDL2_INCLUDE_DIRS ${SDL2_DIR}/include/SDL2)
 	set(SDL2_LIBRARIES "${SDL2MAIN_LIBRARY};${SDL2_LIBRARY}")
 endif(ENABLE_SDL2 MATCHES "BUNDLED")
+endif ()
 
-if(ENABLE_SOUND MATCHES "ON")
+if (ANDROID)
+	set(SDL2_MIXER_INCLUDE_DIRS ${SDL2_MIXER_DIR}/include)
+	set(SDL2_MIXER_LIBRARIES ${SDL2_MIXER_LIBRARY})
+	add_definitions(-DUSE_SDL_MIXER=1)
+else ()
+	if(ENABLE_SOUND MATCHES "ON")
 	# FIXME applies only for *nix systems
-	find_package(PkgConfig)
+		find_package(PkgConfig)
 	pkg_check_modules(SDL2_MIXER REQUIRED SDL2_mixer>=2.0.4)
 	add_definitions(-DUSE_SDL_MIXER=1)
 endif(ENABLE_SOUND MATCHES "ON")
@@ -83,18 +95,25 @@ if(ENABLE_SOUND MATCHES "BUNDLED")
 	set(SDL2_MIXER_LIBRARIES ${SDL2_MIXER_LIBRARY})
 	add_definitions(-DUSE_SDL_MIXER=1)
 endif(ENABLE_SOUND MATCHES "BUNDLED")
+endif ()
 
-if(ENABLE_FLUIDSYNTH MATCHES "ON")
+if (ANDROID)
+	set(FLUIDSYNTH_INCLUDE_DIRS ${FLUIDSYNTH_DIR}/include)
+	set(FLUIDSYNTH_LIBRARIES ${FLUIDSYNTH_LIBRARY})
+	add_definitions("-DUSE_FLUIDSYNTH=1")
+else ()
+	if(ENABLE_FLUIDSYNTH MATCHES "ON")
 	find_package(PkgConfig)
 	pkg_check_modules(FLUIDSYNTH REQUIRED fluidsynth)
 	add_definitions("-DUSE_FLUIDSYNTH=1")
 endif(ENABLE_FLUIDSYNTH MATCHES "ON")
 if(ENABLE_FLUIDSYNTH MATCHES "BUNDLED")
-        find_library(FLUIDSYNTH_LIBRARY fluidsynth PATHS ${CMAKE_SOURCE_DIR}/build_ext/fluidsynth-lite/src)
+		find_library(FLUIDSYNTH_LIBRARY fluidsynth PATHS ${CMAKE_SOURCE_DIR}/build_ext/fluidsynth-lite/src)
 	set(FLUIDSYNTH_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/build_ext/fluidsynth-lite/include)
 	set(FLUIDSYNTH_LIBRARIES ${FLUIDSYNTH_LIBRARY})
 	add_definitions("-DUSE_FLUIDSYNTH=1")
 endif(ENABLE_FLUIDSYNTH MATCHES "BUNDLED")
+endif ()
 
 include_directories(
 	${SDL2_INCLUDE_DIRS}
@@ -132,15 +151,16 @@ if(GIT_FOUND)
 endif(GIT_FOUND)
 
 message(STATUS "Version is ${PROJECT_VERSION}${PROJECT_REVERSION_STRING}")
-configure_file("${CMAKE_SOURCE_DIR}/src/GameSrc/Headers/shockolate_version.h.in"
-	"${CMAKE_BINARY_DIR}/src/GameSrc/Headers/shockolate_version.h" )
-
+if (ANDROID)
+	configure_file("${CMAKE_SOURCE_DIR}/app/src/main/jni/systemshock/src/GameSrc/Headers/shockolate_version.h.in"
+		"${CMAKE_BINARY_DIR}/app/src/main/jni/systemshock/src/GameSrc/Headers/shockolate_version.h" )
+else ()
+	configure_file("${CMAKE_SOURCE_DIR}/src/GameSrc/Headers/shockolate_version.h.in"
+			"${CMAKE_BINARY_DIR}/src/GameSrc/Headers/shockolate_version.h" )
+endif ()
 # Configuration done. Print features
 feature_summary(WHAT ENABLED_FEATURES DESCRIPTION "Enabled features:")
 feature_summary(WHAT DISABLED_FEATURES DESCRIPTION "Disabled features:")
-
-# Sources configuration
-add_subdirectory(src/Libraries/)
 
 set(MAC_SRC
 	src/MacSrc/ShockBitmap.c
@@ -276,8 +296,16 @@ set(GAME_SRC
 )
 
 include_directories(
-	BEFORE
+	SYSTEM
+	src/Libraries/EDMS
+	src/Libraries/EDMS/Source
+	src/Libraries/EDMS/Source/MODELS
+	src/Libraries/AFILE
 	src/Libraries/2D/Source
+	src/Libraries/2D/Source/Flat8
+	src/Libraries/2D/Source/Clip
+	src/Libraries/2D/Source/RSD
+	src/Libraries/2D/Source/Gen
 	src/Libraries/3D/Source
 	src/Libraries/AFILE/Source
 	src/Libraries/DSTRUCT/Source
@@ -298,8 +326,12 @@ include_directories(
 	src/GameSrc/Headers
 	src/MacSrc
 	src/MusicSrc
+	src/Libraries/2D/Source/GR
 	${CMAKE_BINARY_DIR}/src/GameSrc/Headers
 )
+
+# Sources configuration
+add_subdirectory(src/Libraries/)
 
 if(ENABLE_EXAMPLES)
 
@@ -379,12 +411,21 @@ endif()
 add_definitions(
 	-include precompiled.h
 )
+if (ANDROID)
+	add_library(systemshock SHARED
+			${MAC_SRC}
+	)
+else ()
+	add_executable(systemshock
+			${MAC_SRC}
+	)
+endif ()
 
-add_executable(systemshock
-	${MAC_SRC}
-)
-
-add_library(GAME_LIB ${GAME_SRC})
+if (ANDROID)
+	add_library(GAME_LIB STATIC ${GAME_SRC})
+else ()
+	add_library(GAME_LIB ${GAME_SRC})
+endif ()
 
 # MINGW additional linker options
 if(MINGW)
@@ -393,7 +434,7 @@ endif(MINGW)
 
 target_link_libraries(systemshock
 	${WINDOWS_LIBRARIES} # Set it before any linker options! Beware WinMain@16 error!!
-	GAME_LIB
+	-Wl,--whole-archive GAME_LIB -Wl,--no-whole-archive
 	UI_LIB
 	2D_LIB
 	LG_LIB
@@ -417,8 +458,11 @@ target_link_libraries(systemshock
 	${OPENGL_LIBRARIES}
 	${ALSA_LIBRARIES}
 )
+target_link_libraries(systemshock ${OPENGL_opengl_LIBRARY})
 
 # Turn on address sanitizing if wanted
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/externals/sanitizers/cmake" ${CMAKE_MODULE_PATH})
-find_package(Sanitizers)
-add_sanitizers(systemshock)
+if (NOT ANDROID)
+	set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/externals/sanitizers/cmake" ${CMAKE_MODULE_PATH})
+	find_package(Sanitizers)
+	add_sanitizers(systemshock)
+endif ()

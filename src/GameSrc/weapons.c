@@ -37,6 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "objwpn.h"
 #include "player.h"
 #include "sdl_events.h"
+#include "input_sdl_events.h"
 #include "gameloop.h"
 #include "objsim.h"
 #include "gamestrn.h"

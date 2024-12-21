@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "musicai.h"
 #include "player.h"
 #include "sdl_events.h"
+#include "input_sdl_events.h"
 #include "statics.h"
 #include "fullscrn.h"
 #include "render.h"

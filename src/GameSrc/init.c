@@ -51,6 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "render.h"
 #include "rendtool.h"
 #include "sdl_events.h"
+#include "input_sdl_events.h"
 #include "sideicon.h"
 #include "textmaps.h"
 #include "tickcount.h"

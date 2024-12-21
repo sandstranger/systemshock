@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gr2ss.h"
 #include "tools.h"
 #include "sdl_events.h"
+#include "input_sdl_events.h"
 
 ActAnim current_anim;
 bool done_playing_anim = false;
