@@ -80,6 +80,7 @@ extern errtype load_da_palette(void);
 extern void CreateDefaultKeybindsFile(void);
 extern void LoadHotkeyKeybinds(void);
 extern void LoadMoveKeybinds(void);
+char *gamePath;
 
 //------------------------------------------------------------------------------------
 //		Main function.
@@ -90,7 +91,7 @@ int SDL_main(int argc, char **argv) {
 int main(int argc, char **argv) {
 #endif
     // Save the arguments for later
-
+    gamePath = getenv("GAME_PATH");
     num_args = argc;
     arg_values = argv;
 

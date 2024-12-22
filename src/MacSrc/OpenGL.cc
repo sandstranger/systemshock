@@ -180,16 +180,22 @@ static GLuint compileShader(GLenum type, const char *source) {
     return shader;
 }
 
+extern char *gamePath;
+
 static GLuint loadShader(GLenum type, const char *filename) {
+    char *finalShaderFile = static_cast<char *>(malloc(strlen(gamePath) + strlen(filename) + 1 ));
+    strcpy(finalShaderFile, gamePath); /* copy name into the new var */
+    strcat(finalShaderFile, filename);
 
-    DEBUG("Loading shader %s", filename);
+    DEBUG("Loading shader %s", finalShaderFile);
 
-    char fb[256];
-    sprintf(fb, "shaders/%s", filename);
+ //   char fb[256];
+//    sprintf(fb, "%s", finalShaderFile);
 
-    FILE *file = fopen(fb, "r");
+    FILE *file = fopen(finalShaderFile, "r");
     if (file == nullptr) {
-        ERROR("Could not open shader file %s!", fb);
+        ERROR("Could not open shader file %s!", finalShaderFile);
+        free(finalShaderFile);
         return 0;
     }
 
@@ -206,8 +212,9 @@ static GLuint loadShader(GLenum type, const char *filename) {
     GLuint s = compileShader(type, source.str().c_str());
 
     if (s == 0) {
-        ERROR("Could not compile shader %s", filename);
+        ERROR("Could not compile shader %s", finalShaderFile);
     }
+    free(finalShaderFile);
     return s;
 }
 

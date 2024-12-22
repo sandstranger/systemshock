@@ -1205,6 +1205,8 @@ static unsigned int FluidMidiGetOutputCount(MusicDevice *dev)
     return outputCount;
 }
 
+extern char * gamePath;
+
 static void FluidMidiGetOutputName(MusicDevice *dev, const unsigned int outputIndex, char *buffer, const unsigned int bufferSize)
 {
     if (!buffer || bufferSize < 1) return;
@@ -1237,7 +1239,17 @@ static void FluidMidiGetOutputName(MusicDevice *dev, const unsigned int outputIn
     unsigned int outputCount = 0; // subtract 1 to get index
     // count .sf2 files in res/ subdirectory until we find the one that the user
     //  probably wants
+#ifdef ANDROID
+    char *finalFName;
+    finalFName = malloc(strlen(gamePath) + 3 + 1); /* make space for the new string (should check the return value ...) */
+    strcpy(finalFName, gamePath); /* copy name into the new var */
+    strcat(finalFName, "res");
+
+    DIR *dirp = opendir(finalFName);
+    free(finalFName);
+#else
     DIR *dirp = opendir("res");
+#endif
     struct dirent *dp = 0;
     while ((outputCount <= outputIndex) &&
            (dp = readdir(dirp)))
