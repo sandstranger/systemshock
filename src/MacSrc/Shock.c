@@ -45,7 +45,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "shockolate_version.h"
 #include "status.h"
 #include "version.h"
+#ifdef ANDROID
+#include <SDL_main.h>
+#include <dbg.h>
 
+#endif
 //--------------------
 //  Globals
 //--------------------
@@ -80,7 +84,11 @@ extern void LoadMoveKeybinds(void);
 //------------------------------------------------------------------------------------
 //		Main function.
 //------------------------------------------------------------------------------------
+#ifdef ANDROID
+int SDL_main(int argc, char **argv) {
+#else
 int main(int argc, char **argv) {
+#endif
     // Save the arguments for later
 
     num_args = argc;
@@ -93,6 +101,7 @@ int main(int argc, char **argv) {
     INFO("Logger initialized");
 
     // init mac managers
+
 
     InitMac();
 
@@ -119,6 +128,7 @@ int main(int argc, char **argv) {
 
     init_all();
     setup_init();
+
 
     gPlayingGame = true;
 
@@ -167,7 +177,11 @@ void InitSDL() {
     }
 
     // TODO: figure out some universal set of settings that work...
+#ifdef ANDROID
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#else
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);

@@ -458,8 +458,11 @@ target_link_libraries(systemshock
 	${OPENGL_LIBRARIES}
 	${ALSA_LIBRARIES}
 )
-target_link_libraries(systemshock ${OPENGL_opengl_LIBRARY})
 
+if (ANDROID)
+	target_link_libraries(systemshock ${OPENGL_opengl_LIBRARY})
+	target_link_libraries(systemshock log)
+endif ()
 # Turn on address sanitizing if wanted
 if (NOT ANDROID)
 	set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/externals/sanitizers/cmake" ${CMAKE_MODULE_PATH})

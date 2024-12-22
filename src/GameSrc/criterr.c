@@ -22,7 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Shock.h"
 #include "InitMac.h"
 #include "criterr.h"
-
+#ifdef ANDROID
+#include <android/log.h>
+#endif
 /*
  * $Source: r:/prj/cit/src/RCS/criterr.c $
  * $Revision: 1.22 $
@@ -174,7 +176,19 @@ void critical_error(unsigned short code) {
 
 #if 1
     STUB_ONCE("Maybe use SDL_ShowSimpleMessageBox() ?");
+#ifdef ANDROID
+    __android_log_print(ANDROID_LOG_FATAL, "SSHOCK", "A fatal error has occured in System Shock. Error code %d.\n", code);
 
+    s = criterr_type_messages[CLASS(code)]; // Specific error message.
+    if (s != NULL)
+        strcpy(explain, s);
+    for (i = 0; i < NUM_CODE_MESSAGES; i++)
+        if (code_messages[i].code == code)
+            strcat(explain, code_messages[i].message);
+
+    __android_log_print(ANDROID_LOG_FATAL, "SSHOCK", "  %s\n", explain);
+
+#else
     printf("A fatal error has occured in System Shock. Error code %d.\n", code);
 
     s = criterr_type_messages[CLASS(code)]; // Specific error message.
@@ -185,7 +199,7 @@ void critical_error(unsigned short code) {
             strcat(explain, code_messages[i].message);
 
     printf("  %s\n", explain);
-
+#endif
 #else
     sprintf(buf, "A fatal error has occurred in System Shock.  Error code %d.", code);
     len = strlen(buf); // Convert to p-string.
