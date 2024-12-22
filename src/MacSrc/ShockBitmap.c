@@ -42,9 +42,12 @@ void ChangeScreenSize(int width, int height) {
 
     SDL_RenderClear(renderer);
 
+#ifdef ANDROID
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+#else
     extern bool fullscreenActive;
     SDL_SetWindowFullscreen(window, fullscreenActive ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
-
+#endif
     SDL_SetWindowSize(window, width, height);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
