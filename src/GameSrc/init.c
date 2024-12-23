@@ -706,12 +706,17 @@ errtype init_pal_fx() {
     return (OK);
 }
 
+extern char *gamePath;
+
 void shock_alloc_ipal() {
 
     // CC: Make sure we always allocate an ipal first
     gr_alloc_ipal();
-
-    FILE *temp = fopen_caseless("res/data/ipal.dat", "rb");
+    char *finalFile = (malloc(strlen(gamePath) + 17 + 1 ));
+    strcpy(finalFile, gamePath); /* copy name into the new var */
+    strcat(finalFile, "res/data/ipal.dat");
+    FILE *temp = fopen_caseless(finalFile, "rb");
+    free(finalFile);
     if (temp == NULL) {
         ERROR("Failed to open ipal.dat");
         return;

@@ -107,18 +107,32 @@ errtype load_game_schedules(void);
 errtype interpret_qvars(void);
 
 #define OldResIdFromLevel(level) (OLD_SAVE_GAME_ID_BASE + (level * 2) + 2)
+extern char* gamePath;
 
 errtype copy_file(char *src_fname, char *dest_fname) {
     FILE *fsrc, *fdst;
-    DEBUG("copy_file: %s to %s", src_fname, dest_fname);
 
-    fsrc = fopen_caseless(src_fname, "rb");
+    char *finalSrcFile = (malloc(strlen(gamePath) + strlen(src_fname) + 1 ));
+    strcpy(finalSrcFile, gamePath); /* copy name into the new var */
+    strcat(finalSrcFile, src_fname);
+
+    char *finalDestFile = (malloc(strlen(gamePath) + strlen(dest_fname) + 1 ));
+    strcpy(finalDestFile, gamePath); /* copy name into the new var */
+    strcat(finalDestFile, dest_fname);
+
+    DEBUG("copy_file: %s to %s", finalSrcFile, finalDestFile);
+
+    fsrc = fopen_caseless(finalSrcFile, "rb");
     if (fsrc == NULL) {
+        free(finalDestFile);
+        free(finalSrcFile);
         return ERR_FOPEN;
     }
 
-    fdst = fopen_caseless(dest_fname, "wb");
+    fdst = fopen_caseless(finalDestFile, "wb");
     if (fdst == NULL) {
+        free(finalDestFile);
+        free(finalSrcFile);
         return ERR_FOPEN;
     }
 
@@ -129,6 +143,9 @@ errtype copy_file(char *src_fname, char *dest_fname) {
 
     fclose(fsrc);
     fclose(fdst);
+
+    free(finalDestFile);
+    free(finalSrcFile);
 
     return OK;
 }
