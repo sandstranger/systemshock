@@ -1014,6 +1014,9 @@ typedef struct FluidMidiDevice
 
 // forward declaration
 static void FluidMidiGetOutputName(MusicDevice *dev, const unsigned int outputIndex, char *buffer, const unsigned int bufferSize);
+static char* FluidMidiGetOutputNameChar(MusicDevice *dev, const unsigned int outputIndex);
+
+extern char * gamePath;
 
 static int FluidMidiInit(MusicDevice *dev, const unsigned int outputIndex, unsigned samplerate)
 {
@@ -1023,11 +1026,16 @@ static int FluidMidiInit(MusicDevice *dev, const unsigned int outputIndex, unsig
     fluid_settings_t *settings;
     fluid_synth_t *synth;
     int sfid;
-    char fileName[1024] = "res/";
+    char fileName[1024];
+    strcpy(fileName, gamePath);
+    strcat(fileName, "res/");
 
-    FluidMidiGetOutputName(dev, outputIndex, &fileName[4], 1020);
+    char* midiFileName = FluidMidiGetOutputNameChar(dev, outputIndex);
+    strcat(fileName, midiFileName);
+
     if (strlen(fileName) == 4)
     {
+        free(midiFileName);
         WARN("Failed to locate SoundFont for outputIndex=%d", outputIndex);
         return -1;
     }
@@ -1047,6 +1055,7 @@ static int FluidMidiInit(MusicDevice *dev, const unsigned int outputIndex, unsig
         delete_fluid_settings(settings);
         fdev->synth = NULL;
         fdev->settings = NULL;
+        free(midiFileName);
         return -1;
     }
 
@@ -1205,7 +1214,75 @@ static unsigned int FluidMidiGetOutputCount(MusicDevice *dev)
     return outputCount;
 }
 
-extern char * gamePath;
+static char* FluidMidiGetOutputNameChar(MusicDevice *dev, const unsigned int outputIndex)
+{
+    // if (!buffer || bufferSize < 1) return;
+    // default to nothing
+    // save last position for NULL character
+    //   strncpy(buffer, "No SoundFonts found", bufferSize - 1);
+#if WIN32
+    unsigned int outputCount = 0; // subtract 1 to get index
+    // count .sf2 files in res/ subdirectory until we find the one that the user
+    //  probably wants
+    char const * const pattern = "res\\*.sf2";
+    WIN32_FIND_DATA data;
+    HANDLE hFind;
+    if ((hFind = FindFirstFile(pattern, &data)) != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            ++outputCount;
+            if (outputCount - 1 == outputIndex)
+            {
+                // found it
+                strncpy(buffer, data.cFileName, bufferSize - 1);
+                // INFO("Found SoundFont file for outputIndex=%d: %s", outputIndex, data.cFileName);
+                break;
+            }
+        } while (FindNextFile(hFind, &data));
+        FindClose(hFind);
+    }
+#else
+    unsigned int outputCount = 0; // subtract 1 to get index
+    // count .sf2 files in res/ subdirectory until we find the one that the user
+    //  probably wants
+#ifdef ANDROID
+    char *finalFName;
+    finalFName = malloc(strlen(gamePath) + 3 + 1); /* make space for the new string (should check the return value ...) */
+    strcpy(finalFName, gamePath); /* copy name into the new var */
+    strcat(finalFName, "res");
+
+    DIR *dirp = opendir(finalFName);
+    free(finalFName);
+#else
+    DIR *dirp = opendir("res");
+#endif
+    struct dirent *dp = 0;
+    while ((outputCount <= outputIndex) &&
+           (dp = readdir(dirp)))
+    {
+        char *filename = dp->d_name;
+        char namelen = strlen(filename);
+        if (namelen < 4) continue; // ".sf2"
+        if (strcasecmp(".sf2", (char*)(filename + (namelen - 4)))) continue;
+        // found one
+        INFO("Counting SoundFont file: %s", filename);
+        ++outputCount;
+        if (outputCount - 1 != outputIndex) continue;
+        // found it
+        INFO("Found SoundFont file for outputIndex=%d: %s", outputIndex, filename);
+        return filename;
+    }
+    closedir(dirp);
+#endif
+    // put NULL in last position in case we filled up everything else
+    //  *(buffer + bufferSize - 1) = '\0';
+
+    // suppress compiler warnings
+    (void)dev;
+    (void)outputIndex;
+    return 0;
+}
 
 static void FluidMidiGetOutputName(MusicDevice *dev, const unsigned int outputIndex, char *buffer, const unsigned int bufferSize)
 {
