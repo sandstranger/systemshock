@@ -38,7 +38,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "mainloop.h"
 #include "movekeys.h"
 #include "mfdext.h"
-#include "android/log.h"
 
 extern uchar mfd_button_callback_kb(ushort keycode, uint32_t context, intptr_t data);
 extern uchar hw_hotkey_callback(ushort keycode, uint32_t context, intptr_t data);
@@ -129,14 +128,20 @@ void SetDefaultPrefs(void) {
     SetShockGlobals();
 }
 
-
-extern char *gamePath;
-
 static char *GetPrefsPathFilename(void) {
-    char *finalPrefsPath = malloc(strlen(gamePath) + strlen(PREFS_FILENAME) + 1 );
-    strcpy(finalPrefsPath, gamePath);
-    strcat(finalPrefsPath, PREFS_FILENAME);
-    return finalPrefsPath;
+    static char filename[512];
+
+    FILE *f = fopen(PREFS_FILENAME, "r");
+    if (f != NULL) {
+        fclose(f);
+        strcpy(filename, PREFS_FILENAME);
+    } else {
+        char *p = SDL_GetPrefPath("Interrupt", "SystemShock");
+        snprintf(filename, sizeof(filename), "%s%s", p, PREFS_FILENAME);
+        SDL_free(p);
+    }
+
+    return filename;
 }
 
 static char *trim(char *s) {
@@ -156,9 +161,7 @@ static bool is_true(const char *s) {
 //	  Locate the preferences file and load them to set our global pref settings.
 //--------------------------------------------------------------------
 int16_t LoadPrefs(void) {
-    char *fileName = GetPrefsPathFilename();
-    FILE *f = fopen(fileName, "r");
-    free(fileName);
+    FILE *f = fopen(GetPrefsPathFilename(), "r");
     if (!f) {
         // file can't be open, write default preferences
         return SavePrefs();
@@ -252,9 +255,8 @@ int16_t LoadPrefs(void) {
 //--------------------------------------------------------------------
 int16_t SavePrefs(void) {
     INFO("Saving preferences");
-    char *filename = GetPrefsPathFilename();
-    FILE *f = fopen(filename, "w");
-    free(filename);
+
+    FILE *f = fopen(GetPrefsPathFilename(), "w");
     if (!f) {
         printf("ERROR: Failed to open preferences file\n");
         return -1;
@@ -596,10 +598,19 @@ HOTKEYLOOKUP HotKeyLookup[] = {
 int FireKeys[MAX_FIRE_KEYS + 1]; // see input.c
 
 static char *GetKeybindsPathFilename(void) {
-    char *finalKeybindigsPath = malloc(strlen(gamePath) + strlen(KEYBINDS_FILENAME) + 1 );
-    strcpy(finalKeybindigsPath, gamePath);
-    strcat(finalKeybindigsPath, KEYBINDS_FILENAME);
-    return finalKeybindigsPath;
+    static char filename[512];
+
+    FILE *f = fopen(KEYBINDS_FILENAME, "r");
+    if (f != NULL) {
+        fclose(f);
+        strcpy(filename, KEYBINDS_FILENAME);
+    } else {
+        char *p = SDL_GetPrefPath("Interrupt", "SystemShock");
+        snprintf(filename, sizeof(filename), "%s%s", p, KEYBINDS_FILENAME);
+        SDL_free(p);
+    }
+
+    return filename;
 }
 
 // all hotkey initialization and hotkey_add()s are done in this function
@@ -1128,16 +1139,13 @@ void CreateDefaultKeybindsFile(void) {
     f = fopen(filename, "r");
     if (f != NULL) {
         fclose(f);
-        free(filename);
         return;
     }
 
     // open new file for writing
     f = fopen(filename, "w");
-    if (f == NULL) {
-        free(filename);
+    if (f == NULL)
         return;
-    }
 
     // write default hotkey keybinds
     i = 0;
@@ -1173,6 +1181,5 @@ void CreateDefaultKeybindsFile(void) {
         i++;
     }
 
-    free(filename);
     fclose(f);
 }

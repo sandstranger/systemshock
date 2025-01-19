@@ -25,10 +25,8 @@
 #include <stdarg.h>
 #include <string.h>
 #include <time.h>
+
 #include "log.h"
-#ifdef ANDROID
-#include "android/log.h"
-#endif
 
 static struct {
   void *udata;
@@ -118,12 +116,6 @@ void log_log(int level, const char *file, int line, const char *fmt, ...) {
     va_end(args);
     fprintf(stderr, "\n");
   }
-
-#ifdef ANDROID
-    char androidBuf[32];
-    androidBuf[strftime(androidBuf, sizeof(androidBuf), "%Y-%m-%d %H:%M:%S", lt)] = '\0';
-    __android_log_print(ANDROID_LOG_VERBOSE, "SSHOCK", "%s %-5s %s:%d: ", androidBuf, level_names[level], file, line);
-#endif
 
   /* Log to file */
   if (L.fp) {

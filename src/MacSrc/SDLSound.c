@@ -41,11 +41,10 @@ int snd_start_digital(void) {
         ERROR("%s: Init failed", __FUNCTION__);
     }
 
-#ifndef ANDROID
     if (Mix_OpenAudio(48000, AUDIO_S16SYS, 2, 2048) < 0) {
         ERROR("%s: Couldn't open audio device", __FUNCTION__);
     }
-#endif
+
     Mix_AllocateChannels(SND_MAX_SAMPLES);
 
     Mix_HookMusic(MusicCallback, (void *)&MusicDev);
@@ -128,9 +127,9 @@ void snd_sample_reload_parms(snd_digi_parms *sdp) {
 }
 
 int is_playing = 0;
-extern char *gamePath;
+
 int MacTuneLoadTheme(char *theme_base, int themeID) {
-    char filename[57];
+    char filename[40];
     FILE *f;
     int i;
 
@@ -150,34 +149,15 @@ int MacTuneLoadTheme(char *theme_base, int themeID) {
     StopTheMusic();
 
     FreeXMI();
-    char *finalFName;
 
     if (strncmp(theme_base, "thm", 3)) {
-        finalFName = malloc(strlen(gamePath) + 19 + 1); /* make space for the new string (should check the return value ...) */
-        strcpy(finalFName, gamePath); /* copy name into the new var */
-        strcat(finalFName, "res/sound/%s/%s.xmi");
-
-        sprintf(filename, finalFName, MusicDev->musicType, theme_base);
+        sprintf(filename, "res/sound/%s/%s.xmi", MusicDev->musicType, theme_base);
         ReadXMI(filename);
-
-        free(finalFName);
     } else {
-        finalFName = malloc(strlen(gamePath) + 22 + 1); /* make space for the new string (should check the return value ...) */
-        strcpy(finalFName, gamePath); /* copy name into the new var */
-        strcat(finalFName, "res/sound/%s/thm%i.xmi");
-
-        sprintf(filename, finalFName, MusicDev->musicType, themeID);
+        sprintf(filename, "res/sound/%s/thm%i.xmi", MusicDev->musicType, themeID);
         ReadXMI(filename);
 
-        free(finalFName);
-
-        finalFName = malloc(strlen(gamePath) + 19 + 1); /* make space for the new string (should check the return value ...) */
-        strcpy(finalFName, gamePath); /* copy name into the new var */
-        strcat(finalFName, "res/sound/thm%i.bin");
-
-        sprintf(filename, finalFName, themeID);
-
-        free(finalFName);
+        sprintf(filename, "res/sound/thm%i.bin", themeID);
         extern FILE *fopen_caseless(const char *path, const char *mode); // see caseless.c
         f = fopen_caseless(filename, "rb");
         if (f != 0) {

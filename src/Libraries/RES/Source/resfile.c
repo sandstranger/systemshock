@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "res_.h"
 
 //	Resource files start with this signature
-extern char * gamePath;
+
 char resFileSignature[16] = {'L', 'G', ' ', 'R', 'e', 's', ' ', 'F', 'i', 'l', 'e', ' ', 'v', '2', 13, 10};
 
 //	The active resource file info table
@@ -106,17 +106,13 @@ int32_t ResOpenResFile(const char *fname, ResOpenMode mode, bool auxinfo) {
     ResFile *prf;
     ResFileHeader fileHead;
     ResDirHeader dirHead;
-    char *finalFName;
-    finalFName = malloc(strlen(gamePath) + strlen(fname) + 1); /* make space for the new string (should check the return value ...) */
-    strcpy(finalFName, gamePath); /* copy name into the new var */
-    strcat(finalFName, fname);
     // uint8_t cd_spoof = FALSE;
 
     //	Find free file number, else return -1
 
     filenum = ResFindFreeFilenum();
     if (filenum < 0) {
-        WARN("%s: no free filenum for: %s", __FUNCTION__, finalFName);
+        WARN("%s: no free filenum for: %s", __FUNCTION__, fname);
         return (-1);
     }
 
@@ -124,28 +120,28 @@ int32_t ResOpenResFile(const char *fname, ResOpenMode mode, bool auxinfo) {
     //	return error except if mode 2 (edit/create), in which case
     //	drop thru to create case by faking mode 3.
 
-    TRACE("%s: %s", __FUNCTION__, finalFName);
+    TRACE("%s: %s", __FUNCTION__, fname);
 
     if (mode != ROM_CREATE) {
         //		fd = DatapathFDOpen(&gDatapath, fname, openMode[mode]);
 
         if (mode == ROM_READ)
-            fd = fopen_caseless(finalFName, "rb");
+            fd = fopen_caseless(fname, "rb");
         else
-            fd = fopen_caseless(finalFName, "rb+");
+            fd = fopen_caseless(fname, "rb+");
 
         if (fd != NULL) {
             fread(&fileHead, sizeof(ResFileHeader), 1, fd);
             if (strncmp(fileHead.signature, resFileSignature, sizeof(resFileSignature)) != 0) {
                 fclose(fd);
-                WARN("%s: %s is not valid resource file", __FUNCTION__, finalFName);
+                WARN("%s: %s is not valid resource file", __FUNCTION__, fname);
                 return (-3);
             }
         } else {
             if (mode == ROM_EDITCREATE)
                 mode = ROM_CREATE;
             else {
-                WARN("%s: can't open file: %s", __FUNCTION__, finalFName);
+                WARN("%s: can't open file: %s", __FUNCTION__, fname);
                 return (-2);
             }
         }
@@ -154,9 +150,9 @@ int32_t ResOpenResFile(const char *fname, ResOpenMode mode, bool auxinfo) {
     //	If create mode, or edit/create failed, try to open file for creation.
 
     if (mode == ROM_CREATE) {
-        fd = fopen_caseless(finalFName, "wb");
+        fd = fopen_caseless(fname, "wb");
         if (fd == NULL) {
-            WARN("%s: Can't create file: %s", __FUNCTION__, finalFName);
+            WARN("%s: Can't create file: %s", __FUNCTION__, fname);
             return (-2);
         }
     }
@@ -176,7 +172,7 @@ int32_t ResOpenResFile(const char *fname, ResOpenMode mode, bool auxinfo) {
 
     //	Record resFile[] file descriptor
     prf->fd = fd;
-    TRACE("%s: opening: %s at filenum %d",__FUNCTION__, finalFName, filenum);
+    TRACE("%s: opening: %s at filenum %d",__FUNCTION__, fname, filenum);
 
     // Switch based on mode
     switch (mode) {
@@ -205,7 +201,6 @@ int32_t ResOpenResFile(const char *fname, ResOpenMode mode, bool auxinfo) {
         break;
     }
 
-    free(finalFName);
     // Return filenum
     return (filenum);
 }
